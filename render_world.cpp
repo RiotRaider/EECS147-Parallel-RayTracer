@@ -63,7 +63,14 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth) const
     // determine the color here
     std::pair<Shaded_Object,Hit> obj = Closest_Intersection(ray);
     if(obj.first.object == nullptr){
-            
+            if(background_shader==nullptr){
+                color[0]=0;
+                color[1]=0;
+                color[2]=0;
+            }
+            else{
+                color=background_shader->Shade_Surface(*this,ray,obj.second,ray.direction,ray.direction,1);
+            }
     }else{
         vec3 q = ray.endpoint+(ray.direction*obj.second.dist);
         vec3 n = obj.first.object->Normal(ray,obj.second);
