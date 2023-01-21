@@ -11,14 +11,18 @@ Sphere::Sphere(const Parse* parse, std::istream& in)
 // Determine if the ray intersects with the sphere
 Hit Sphere::Intersection(const Ray& ray, int part) const
 {
+    //TODO-HW2
     TODO;
+    //END TODO-HW2
     return {};
 }
 
 vec3 Sphere::Normal(const Ray& ray, const Hit& hit) const
 {
     vec3 normal;
+    //TODO-HW2
     TODO; // compute the normal direction
+    //END TODO-HW2 
     return normal;
 }
 
