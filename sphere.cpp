@@ -12,17 +12,30 @@ Sphere::Sphere(const Parse* parse, std::istream& in)
 Hit Sphere::Intersection(const Ray& ray, int part) const
 {
     
-    TODO;
-    
-    return {};
+    Hit hit;
+    vec3 w= ray.endpoint-this->center;
+    double wu=0,uu=0,ww=00;
+    double t1,t2;
+    for(int i=0;i<3;i++){
+        wu+=(w[i]*ray.direction[i]);
+        uu+=(ray.direction[i]*ray.direction[i]);
+        ww+=(w[i]*w[i]);
+    }
+    t1 = -wu-sqrt((wu*wu)-(ww-(this->radius*this->radius)));
+    t2 = -wu+sqrt((wu*wu)-(ww-(this->radius*this->radius)));
+    if(t1<0){hit.dist=t2;}
+    else {hit.dist=t1;}
+
+    return hit;
 }
 
 vec3 Sphere::Normal(const Ray& ray, const Hit& hit) const
 {
     vec3 normal;
-    
-    TODO; // compute the normal direction
-    
+    // compute the normal direction
+    normal = (ray.Point(hit.dist)-this->center)/this->radius;
+    normal=normal.normalized();
+
     return normal;
 }
 
