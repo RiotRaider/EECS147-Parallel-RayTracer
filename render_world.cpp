@@ -20,19 +20,17 @@ Render_World::~Render_World()
 // to ensure that hit.dist>=small_t.
 std::pair<Shaded_Object,Hit> Render_World::Closest_Intersection(const Ray& ray) const
 {
-    //TODO-HW2
+    
     TODO;
-    //END TODO-HW2
     return {};
 }
 
 // set up the initial view ray and call
 void Render_World::Render_Pixel(const ivec2& pixel_index)
 {
-    //TODO-HW2
-    TODO; // set up the initial view ray here
-    //END TODO-HW2 
-    Ray ray;
+    vec3 rayDir = camera.World_Position(pixel_index) - camera.position;
+    // set up the initial view ray here
+    Ray ray(camera.position,rayDir);
     vec3 color=Cast_Ray(ray,1);
     camera.Set_Pixel(pixel_index,Pixel_Color(color));
 }
@@ -49,8 +47,7 @@ void Render_World::Render()
 vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth) const
 {
     vec3 color;
-    //TODO-HW2
+    
     TODO; // determine the color here
-    //END 
     return color;
 }

@@ -15,9 +15,9 @@ Plane::Plane(const Parse* parse,std::istream& in)
 // Intersect with the plane.  The plane's normal points outside.
 Hit Plane::Intersection(const Ray& ray, int part) const
 {
-    //TODO-HW2
+    
     TODO;
-    //END TODO-HW2
+    
     return {};
 }
 
