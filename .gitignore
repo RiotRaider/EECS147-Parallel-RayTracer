@@ -1,3 +1,4 @@
 *.o
 .sconsign.dblite
 ray_tracer
+output.png
