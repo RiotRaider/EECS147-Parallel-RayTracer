@@ -20,11 +20,14 @@ Render_World::~Render_World()
 // to ensure that hit.dist>=small_t.
 std::pair<Shaded_Object,Hit> Render_World::Closest_Intersection(const Ray& ray) const
 {
-    std::cout<<"DEBUG MESSAGE: ENTER Render_World::Closest_Intersection\n";
+    
     double min_t = std::numeric_limits<double>::max();
-    std::pair<Shaded_Object,Hit> obj;
+    
+    Hit hit;
+    Shaded_Object o;
+    std::pair<Shaded_Object,Hit> obj = {o,hit};
     Hit hit_test;
-    for(auto a:objects){
+    for(auto a:this->objects){
         hit_test=a.object->Intersection(ray,-1);
         if(hit_test.dist>=small_t && hit_test.dist<min_t){
             min_t = hit_test.dist;
@@ -38,9 +41,8 @@ std::pair<Shaded_Object,Hit> Render_World::Closest_Intersection(const Ray& ray) 
 // set up the initial view ray and call
 void Render_World::Render_Pixel(const ivec2& pixel_index)
 {
-    std::cout<<"DEBUG MESSAGE: ENTER Render_World::Render_Pixel\n";
-    vec3 rayDir = (camera.World_Position(pixel_index) - camera.position).normalized();
     // set up the initial view ray here
+    vec3 rayDir = (camera.World_Position(pixel_index) - camera.position).normalized();
     Ray ray(camera.position,rayDir);
     vec3 color=Cast_Ray(ray,1);
     camera.Set_Pixel(pixel_index,Pixel_Color(color));
@@ -57,13 +59,15 @@ void Render_World::Render()
 // or the background color if there is no object intersection
 vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth) const
 {
-    std::cout<<"DEBUG MESSAGE: ENTER Render_World::Cast_Ray\n";
     vec3 color;
-    
     // determine the color here
     std::pair<Shaded_Object,Hit> obj = Closest_Intersection(ray);
-    vec3 q = ray.endpoint+(ray.direction*obj.second.dist);
-    vec3 n = obj.first.object->Normal(ray,obj.second);
-    color = obj.first.shader->Shade_Surface(*this,ray,obj.second,q,n,1);
+    if(obj.first.object == nullptr){
+            
+    }else{
+        vec3 q = ray.endpoint+(ray.direction*obj.second.dist);
+        vec3 n = obj.first.object->Normal(ray,obj.second);
+        color = obj.first.shader->Shade_Surface(*this,ray,obj.second,q,n,1);
+    }
     return color;
 }
