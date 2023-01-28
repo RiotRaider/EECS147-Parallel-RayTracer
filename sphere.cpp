@@ -11,16 +11,13 @@ Sphere::Sphere(const Parse* parse, std::istream& in)
 // Determine if the ray intersects with the sphere
 Hit Sphere::Intersection(const Ray& ray, int part) const
 {
-    
     Hit hit;
     vec3 w= ray.endpoint-this->center;
-    double wu=0,uu=0,ww=00;
+    double wu=0,ww=0;
     double t1,t2;
-    for(int i=0;i<3;i++){
-        wu+=(w[i]*ray.direction[i]);
-        uu+=(ray.direction[i]*ray.direction[i]);
-        ww+=(w[i]*w[i]);
-    }
+    wu = dot(w,ray.direction);
+    ww = dot(w,w);
+
     t1 = -wu-sqrt((wu*wu)-(ww-(this->radius*this->radius)));
     t2 = -wu+sqrt((wu*wu)-(ww-(this->radius*this->radius)));
     if(t1<0){hit.dist=t2;}

@@ -20,6 +20,9 @@ Render_World::~Render_World()
 // to ensure that hit.dist>=small_t.
 std::pair<Shaded_Object,Hit> Render_World::Closest_Intersection(const Ray& ray) const
 {
+    //PIXEL TRACE
+    Debug_Scope scope;
+    //END PIXEL TRACE
     
     double min_t = std::numeric_limits<double>::max();
     
@@ -30,17 +33,41 @@ std::pair<Shaded_Object,Hit> Render_World::Closest_Intersection(const Ray& ray) 
     for(auto a:this->objects){
         hit_test=a.object->Intersection(ray,-1);
         if(hit_test.dist>=small_t && hit_test.dist<min_t){
+            //PIXEL TRACE
+            if(Debug_Scope::enable){
+                Pixel_Print("intersect test with ",a.object->name,"; hit: ", hit_test);
+            }
+            //END PIXEL TRACE
             min_t = hit_test.dist;
             obj.first = a;
             obj.second = hit_test;
+        }else{
+            //PIXEL TRACE
+            if(Debug_Scope::enable){
+                Pixel_Print("no intersection with ",a.object->name);
+            }
+            //END PIXEL TRACE
         }
     }
+
+        //PIXEL TRACE
+            if(Debug_Scope::enable){
+                Pixel_Print("closest intersection; obj: ", obj.first.object->name,"; hit: ", obj.second);
+            }
+        //END PIXEL TRACE
     return obj;
 }
 
 // set up the initial view ray and call
 void Render_World::Render_Pixel(const ivec2& pixel_index)
 {
+    //PIXEL TRACE
+    Debug_Scope scope;
+        if(Debug_Scope::enable){
+            Pixel_Print("debug pixel: -x ", pixel_index.x[0]," -y ",pixel_index.x[1]);
+        }
+    //END PIXEL TRACE
+    
     // set up the initial view ray here
     vec3 rayDir = (camera.World_Position(pixel_index) - camera.position).normalized();
     Ray ray(camera.position,rayDir);
@@ -59,6 +86,12 @@ void Render_World::Render()
 // or the background color if there is no object intersection
 vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth) const
 {
+    //PIXEL TRACE
+    Debug_Scope scope;
+        if(Debug_Scope::enable){
+            Pixel_Print("cast ray ", ray);
+        }
+    //END PIXEL TRACE
     vec3 color;
     // determine the color here
     std::pair<Shaded_Object,Hit> obj = Closest_Intersection(ray);
@@ -74,6 +107,11 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth) const
     }else{
         vec3 q = ray.endpoint+(ray.direction*obj.second.dist);
         vec3 n = obj.first.object->Normal(ray,obj.second);
+        //PIXEL TRACE
+            if(Debug_Scope::enable){
+                Pixel_Print("call Shade_Surface with location ", q ,"; normal: ", n);
+            }
+        //END PIXEL TRACE
         color = obj.first.shader->Shade_Surface(*this,ray,obj.second,q,n,1);
     }
     return color;

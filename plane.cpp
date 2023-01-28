@@ -15,14 +15,12 @@ Plane::Plane(const Parse* parse,std::istream& in)
 // Intersect with the plane.  The plane's normal points outside.
 Hit Plane::Intersection(const Ray& ray, int part) const
 {
-    
     Hit hit;
     double un=0;//dotproduct of ray direction and plane normal
     double rn=0;//dotproduct of ray formed by plane point and endpoint and the plane normal
-    for(int i = 0;i<3;i++){
-         un += ray.direction[i]*this->normal[i];
-         rn += (this->x[i]-ray.endpoint[i])*this->normal[i];
-    }
+    un = dot(ray.direction,this->normal);
+    rn = dot((this->x-ray.endpoint),this->normal);
+
     if(un!=0){
         hit.dist = rn/un;
     }
