@@ -25,11 +25,11 @@ std::pair<Shaded_Object,Hit> Render_World::Closest_Intersection(const Ray& ray) 
     //END PIXEL TRACE
     
     double min_t = std::numeric_limits<double>::max();
-    
-    Hit hit;
     Shaded_Object o;
-    std::pair<Shaded_Object,Hit> obj = {o,hit};
+    Hit h;
+    std::pair<Shaded_Object,Hit> obj={o,h};
     Hit hit_test;
+    bool intersect = false;
     for(auto a:this->objects){
         hit_test=a.object->Intersection(ray,-1);
         if(hit_test.dist>=small_t && hit_test.dist<min_t){
@@ -41,6 +41,7 @@ std::pair<Shaded_Object,Hit> Render_World::Closest_Intersection(const Ray& ray) 
             min_t = hit_test.dist;
             obj.first = a;
             obj.second = hit_test;
+            intersect = true;
         }else{
             //PIXEL TRACE
             if(Debug_Scope::enable){
@@ -48,13 +49,18 @@ std::pair<Shaded_Object,Hit> Render_World::Closest_Intersection(const Ray& ray) 
             }
             //END PIXEL TRACE
         }
-    }
-
+    }   
+    if(intersect){
         //PIXEL TRACE
-            if(Debug_Scope::enable){
-                Pixel_Print("closest intersection; obj: ", obj.first.object->name,"; hit: ", obj.second);
-            }
-        //END PIXEL TRACE
+        if(Debug_Scope::enable){
+            Pixel_Print("closest intersection; obj: ", obj.first.object->name,"; hit: ", obj.second);
+        }//END PIXEL TRACE
+    }else{
+        //PIXEL TRACE
+        if(Debug_Scope::enable){
+            Pixel_Print("closest intersection; none");
+        }//END PIXEL TRACE
+    }
     return obj;
 }
 
