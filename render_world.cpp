@@ -112,7 +112,7 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth) const
             }
     }else{
         vec3 q = ray.endpoint+(ray.direction*obj.second.dist);
-        vec3 n = obj.first.object->Normal(ray,obj.second);
+        vec3 n = (obj.first.object->Normal(ray,obj.second)).normalized();
         //PIXEL TRACE
             if(Debug_Scope::enable){
                 Pixel_Print("call Shade_Surface with location ", q ,"; normal: ", n);
