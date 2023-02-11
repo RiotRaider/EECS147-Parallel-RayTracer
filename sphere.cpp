@@ -12,15 +12,13 @@ Sphere::Sphere(const Parse* parse, std::istream& in)
 Hit Sphere::Intersection(const Ray& ray, int part) const
 {
     Hit hit;
-    vec3 w= ray.endpoint-this->center;
-    double wu=0,ww=0;
+    vec3 w= (this->center-ray.endpoint);
+    double wu=0;
     double t1,t2;
     wu = dot(w,ray.direction);
-    ww = dot(w,w);
-
-    t1 = -wu-sqrt((wu*wu)-(ww-(this->radius*this->radius)));
-    t2 = -wu+sqrt((wu*wu)-(ww-(this->radius*this->radius)));
-    if(t1<0){hit.dist=t2;}
+    t1 = wu - sqrt(pow(this->radius,2)-(dot(w,w)-pow(wu,2)));
+    t2 = wu + sqrt(pow(this->radius,2)-(dot(w,w)-pow(wu,2)));
+    if(t1<small_t){hit.dist=t2;}
     else {hit.dist=t1;}
 
     return hit;
