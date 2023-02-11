@@ -37,7 +37,7 @@ std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray)
     for (auto a : this->objects)
     {
         hit_test = a.object->Intersection(ray, -1);
-        if (hit_test.dist >= small_t )
+        if (hit_test.dist >= small_t)
         {
             // PIXEL TRACE
             if (Debug_Scope::enable)
@@ -45,10 +45,11 @@ std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray)
                 Pixel_Print("intersect test with ", a.object->name, "; hit: ", hit_test);
             }
             // END PIXEL TRACE
-            if(hit_test.dist < min_t ){
-            min_t = hit_test.dist;
-            obj.first = a;
-            obj.second = hit_test;
+            if (hit_test.dist < min_t)
+            {
+                min_t = hit_test.dist;
+                obj.first = a;
+                obj.second = hit_test;
             }
             intersect = true;
         }
@@ -118,19 +119,21 @@ vec3 Render_World::Cast_Ray(const Ray &ray, int recursion_depth) const
     }
     // END PIXEL TRACE
     vec3 color;
-    // Set color to background color as default
-    Hit dummyHit;
-    if (background_shader == nullptr)
+    if (recursion_depth > recursion_depth_limit)
     {
+        // PIXEL TRACE
+        if (Debug_Scope::enable)
+        {
+            Pixel_Print("ray too deep; return black");
+        }
+        // END PIXEL TRACE
         color.make_zero();
-    }
-    else
-    {
-        color = background_shader->Shade_Surface(*this, ray, dummyHit, ray.direction, ray.direction, 1);
-    }
-    if(recursion_depth > recursion_depth_limit){
         return color;
     }
+    // Set color to background color as default
+    Hit dummyHit;
+    
+    
     // determine the color here (change if not at recursion limit)
     std::pair<Shaded_Object, Hit> obj = Closest_Intersection(ray);
     if (obj.first.object != nullptr)
@@ -144,7 +147,29 @@ vec3 Render_World::Cast_Ray(const Ray &ray, int recursion_depth) const
         }
         // END PIXEL TRACE
         color = obj.first.shader->Shade_Surface(*this, ray, obj.second, q, n, recursion_depth);
+    }else{
+        if (background_shader == nullptr)
+    {
+        // PIXEL TRACE
+        if (Debug_Scope::enable)
+        {
+            Pixel_Print("no background; return black");
+        }
+        // END PIXEL TRACE
+        color.make_zero();
+    }
+    else
+    {
+        
+        color = background_shader->Shade_Surface(*this, ray, dummyHit, ray.direction, ray.direction, 1);
+        // PIXEL TRACE
+        if (Debug_Scope::enable)
+        {
+            Pixel_Print("background hit; return color: ", color);
+        }
+        // END PIXEL TRACE
+    }
     }
 
-return color;
+    return color;
 }

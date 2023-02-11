@@ -19,9 +19,9 @@ vec3 Reflective_Shader::
     vec3 c0,cR,color;
     Ray reflection;
     reflection.endpoint=intersection_point;
-    reflection.direction = -(2 * dot(ray.direction, normal) * normal - ray.direction).normalized();
+    reflection.direction = ((2 * dot(-ray.direction, normal) * normal) + ray.direction).normalized();
     c0 = shader->Shade_Surface(render_world,ray,hit,intersection_point,normal,1);
-    cR = render_world.Cast_Ray(reflection,++recursion_depth);
+    cR = render_world.Cast_Ray(reflection,recursion_depth+1);
     color = c0*(1-reflectivity) + cR*(reflectivity);
     //PIXEL TRACE
         Debug_Scope scope;
