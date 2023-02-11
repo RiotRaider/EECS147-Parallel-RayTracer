@@ -23,5 +23,10 @@ vec3 Reflective_Shader::
     c0 = shader->Shade_Surface(render_world,ray,hit,intersection_point,normal,1);
     cR = render_world.Cast_Ray(reflection,++recursion_depth);
     color = c0*(1-reflectivity) + cR*(reflectivity);
+    //PIXEL TRACE
+        Debug_Scope scope;
+        if(Debug_Scope::enable)
+            Pixel_Print("reflected ray: ", ray,"; reflected color: ", color);
+    //END PIXEL TRACE
     return color;
 }
