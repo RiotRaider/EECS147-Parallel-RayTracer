@@ -37,7 +37,7 @@ std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray)
     for (auto a : this->objects)
     {
         hit_test = a.object->Intersection(ray, -1);
-        if (hit_test.dist >= small_t && hit_test.dist < min_t &&dot(ray.direction,a.object->Normal(ray,hit_test))!=0)
+        if (hit_test.dist >= small_t &&dot(ray.direction,a.object->Normal(ray,hit_test))!=0)
         {
             // PIXEL TRACE
             if (Debug_Scope::enable)
@@ -45,9 +45,11 @@ std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray)
                 Pixel_Print("intersect test with ", a.object->name, "; hit: ", hit_test);
             }
             // END PIXEL TRACE
+            if(hit_test.dist < min_t ){
             min_t = hit_test.dist;
             obj.first = a;
             obj.second = hit_test;
+            }
             intersect = true;
         }
         else
