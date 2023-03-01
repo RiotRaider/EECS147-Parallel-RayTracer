@@ -24,10 +24,10 @@ vec3 Phong_Shader::
     vec3 color;                                                              // variable for final color
     vec3 ambient, diffuse, specular;                                         // variables for total light components
     double intensity, phi;                                                   // variables for the intensity of a light component
-    ambient = color_ambient->Get_Color({}) * render_world.ambient_intensity; // Capture ambient light
+    ambient = color_ambient->Get_Color(hit.uv) * render_world.ambient_intensity; // Capture ambient light
     if (render_world.ambient_color)
     {
-        ambient *= render_world.ambient_color->Get_Color({});
+        ambient *= render_world.ambient_color->Get_Color(hit.uv);
     }
     color = ambient;
     // PIXEL TRACE
@@ -85,14 +85,14 @@ vec3 Phong_Shader::
             {
                 intensity = 0;
             }
-            diffuse = (l->Emitted_Light(shadeRay) * intensity) * color_diffuse->Get_Color({});
+            diffuse = (l->Emitted_Light(shadeRay) * intensity) * color_diffuse->Get_Color(hit.uv);
             reflect = (2 * dot(normal, shadeRay.normalized()) * normal - (shadeRay.normalized()));
             phi = dot(-ray.direction, reflect);
             if (phi < 0)
             {
                 phi = 0;
             }
-            specular = (l->Emitted_Light(shadeRay) * pow(phi, specular_power)) * color_specular->Get_Color({});
+            specular = (l->Emitted_Light(shadeRay) * pow(phi, specular_power)) * color_specular->Get_Color(hit.uv);
             // PIXEL TRACE
             if (Debug_Scope::enable)
             {

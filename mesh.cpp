@@ -151,6 +151,11 @@ Hit Mesh::Intersect_Triangle(const Ray &ray, int tri) const
         Pixel_Print("mesh ", this->name, " triangle ", tri, " intersected; weights: (", a, b, g, "); dist ", t);
         // END PIXEL TRACE
         hit.dist = t;
+        ivec3 uv_vert = triangle_texture_index[tri];
+        vec2 uvA=uvs[uv_vert[0]];
+        vec2 uvB=uvs[uv_vert[1]]; 
+        vec2 uvC=uvs[uv_vert[2]];
+        hit.uv =a*uvA+b*uvB+g*uvC;
     }
     return hit;
 }

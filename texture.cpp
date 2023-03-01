@@ -43,6 +43,17 @@ Texture::~Texture()
 
 vec3 Texture::Get_Color(const vec2& uv) const
 {
-    TODO;
-    return {0,0,0};
+    int i=0, j=0; //pixel index to use for color
+    vec3 color = {0,0,0};
+    i = floor(uv[0]*width);
+    j= floor(uv[1]*height);
+
+    i=wrap(i,width);
+    j=wrap(j,height);
+
+    color = ;
+    //PIXEL TRACE
+        Pixel_Print("texture (u,v): ", uv, " (i,j): ",i,' ',j," color: ",color);
+    //END PIXEL TRACE
+    return color;
 }
