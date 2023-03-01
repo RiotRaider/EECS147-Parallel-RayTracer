@@ -50,8 +50,8 @@ vec3 Texture::Get_Color(const vec2& uv) const
 
     i=wrap(i,width);
     j=wrap(j,height);
-
-    color = ;
+    color = From_Pixel(data[width*j + i]);
+    //color = ;
     //PIXEL TRACE
         Pixel_Print("texture (u,v): ", uv, " (i,j): ",i,' ',j," color: ",color);
     //END PIXEL TRACE
