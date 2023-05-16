@@ -1,0 +1,10 @@
+Requirements:
+    -libpng for gcc/g++
+    -c++ 17 support
+    -nvcc
+
+Developed and run on UCR Bender Apptainer:
+    singularity shell --nv /singularity/cs217/cs217.sif
+
+To compile unaccelerated ray tracer:
+    g++ -std=c++17 -g -Wall -O3 *.cpp -o ray_tracer -lpng
