@@ -5,7 +5,7 @@
 #include <utility>
 #include "camera.h"
 #include "object.h"
-// #include "acceleration.h"
+
 
 class Light;
 class Shader;

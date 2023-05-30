@@ -24,10 +24,6 @@ Render_World::~Render_World()
 // to ensure that hit.dist>=small_t.
 std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray) const
 {
-    // PIXEL TRACE
-    Debug_Scope scope;
-    // END PIXEL TRACE
-
     double min_t = std::numeric_limits<double>::max();
     Shaded_Object o;
     Hit h;
@@ -39,12 +35,6 @@ std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray)
         hit_test = a.object->Intersection(ray, -1);
         if (hit_test.dist >= small_t)
         {
-            // PIXEL TRACE
-            if (Debug_Scope::enable)
-            {
-                Pixel_Print("intersect test with ", a.object->name, "; hit: ", hit_test);
-            }
-            // END PIXEL TRACE
             if (hit_test.dist < min_t)
             {
                 min_t = hit_test.dist;
@@ -53,31 +43,6 @@ std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray)
             }
             intersect = true;
         }
-        else
-        {
-            // PIXEL TRACE
-            if (Debug_Scope::enable)
-            {
-                Pixel_Print("no intersection with ", a.object->name);
-            }
-            // END PIXEL TRACE
-        }
-    }
-    if (intersect)
-    {
-        // PIXEL TRACE
-        if (Debug_Scope::enable)
-        {
-            Pixel_Print("closest intersection; obj: ", obj.first.object->name, "; hit: ", obj.second);
-        } // END PIXEL TRACE
-    }
-    else
-    {
-        // PIXEL TRACE
-        if (Debug_Scope::enable)
-        {
-            Pixel_Print("closest intersection; none");
-        } // END PIXEL TRACE
     }
     return obj;
 }
@@ -85,14 +50,6 @@ std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray)
 // set up the initial view ray and call
 void Render_World::Render_Pixel(const ivec2 &pixel_index)
 {
-    // PIXEL TRACE
-    Debug_Scope scope;
-    if (Debug_Scope::enable)
-    {
-        Pixel_Print("debug pixel: -x ", pixel_index.x[0], " -y ", pixel_index.x[1]);
-    }
-    // END PIXEL TRACE
-
     // set up the initial view ray here
     vec3 rayDir = (camera.World_Position(pixel_index) - camera.position).normalized();
     Ray ray(camera.position, rayDir);
@@ -111,22 +68,9 @@ void Render_World::Render()
 // or the background color if there is no object intersection
 vec3 Render_World::Cast_Ray(const Ray &ray, int recursion_depth) const
 {
-    // PIXEL TRACE
-    Debug_Scope scope;
-    if (Debug_Scope::enable)
-    {
-        Pixel_Print("cast ray ", ray);
-    }
-    // END PIXEL TRACE
     vec3 color;
     if (recursion_depth > recursion_depth_limit)
     {
-        // PIXEL TRACE
-        if (Debug_Scope::enable)
-        {
-            Pixel_Print("ray too deep; return black");
-        }
-        // END PIXEL TRACE
         color.make_zero();
         return color;
     }
@@ -140,34 +84,17 @@ vec3 Render_World::Cast_Ray(const Ray &ray, int recursion_depth) const
     {
         vec3 q = ray.endpoint + (ray.direction * obj.second.dist);
         vec3 n = (obj.first.object->Normal(ray, obj.second)).normalized();
-        // PIXEL TRACE
-        if (Debug_Scope::enable)
-        {
-            Pixel_Print("call Shade_Surface with location ", q, "; normal: ", n);
-        }
-        // END PIXEL TRACE
+
         color = obj.first.shader->Shade_Surface(*this, ray, obj.second, q, n, recursion_depth);
     }else{
         if (background_shader == nullptr)
     {
-        // PIXEL TRACE
-        if (Debug_Scope::enable)
-        {
-            Pixel_Print("no background; return black");
-        }
-        // END PIXEL TRACE
         color.make_zero();
     }
     else
     {
         
         color = background_shader->Shade_Surface(*this, ray, dummyHit, ray.direction, ray.direction, 1);
-        // PIXEL TRACE
-        if (Debug_Scope::enable)
-        {
-            Pixel_Print("background hit; return color: ", color);
-        }
-        // END PIXEL TRACE
     }
     }
 
