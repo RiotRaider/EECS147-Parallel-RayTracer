@@ -5,6 +5,8 @@
 #include "misc.h"
 #include <limits>
 
+//#include "managed.cu"
+
 class Box
 {
 public:

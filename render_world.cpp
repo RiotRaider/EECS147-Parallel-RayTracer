@@ -10,7 +10,7 @@
 #include "light.h"
 #include "ray.h"
 
-#include "support.cu"
+#include "support.h"
 
 extern bool enable_acceleration;
 
