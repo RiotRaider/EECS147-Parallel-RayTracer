@@ -23,6 +23,8 @@ class Render_World
 public:
     Camera camera;
 
+    bool gpu_on = false;
+
     // This is the background shader that you should use in case no other
     // objects are intersected.  If this pointer is null, then use black as the
     // color instead.

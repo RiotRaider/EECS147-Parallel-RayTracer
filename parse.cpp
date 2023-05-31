@@ -73,6 +73,9 @@ void Parse::Parse_Input(Render_World& render_world, std::istream& in)
         {
             ss>>render_world.recursion_depth_limit;
         }
+        else if(token=="gpu") {
+            ss>>render_world.gpu_on;
+        }
         else
         {
             std::cout<<"Failed to parse at: "<<token<<std::endl;

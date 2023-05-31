@@ -1,10 +1,16 @@
 // Student Name: Justin Sanders
 // Student ID: 862192429
+
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "render_world.h"
 #include "flat_shader.h"
 #include "object.h"
 #include "light.h"
 #include "ray.h"
+
+#include "support.cu"
 
 extern bool enable_acceleration;
 
@@ -102,9 +108,29 @@ void Render_World::Render_Pixel(const ivec2 &pixel_index)
 
 void Render_World::Render()
 {
-    for (int j = 0; j < camera.number_pixels[1]; j++)
-        for (int i = 0; i < camera.number_pixels[0]; i++)
-            Render_Pixel(ivec2(i, j));
+    Timer timer;
+
+    if (gpu_on) {
+        //compute on gpu
+        printf("Render image on gpu..."); fflush(stdout);
+        startTime(&timer);
+        stopTime(&timer); 
+        printf("%f s\n", elapsedTime(timer));
+    }
+    else {
+        //compute on cpu
+        printf("Render image on cpu..."); fflush(stdout);
+        startTime(&timer);
+
+        for (int j = 0; j < camera.number_pixels[1]; j++) {
+            for (int i = 0; i < camera.number_pixels[0]; i++) {
+                Render_Pixel(ivec2(i, j));
+            }
+        }
+
+        stopTime(&timer); 
+        printf("%f s\n", elapsedTime(timer));
+    }
 }
 
 // cast ray and return the color of the closest intersected surface point,
