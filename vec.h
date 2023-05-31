@@ -4,7 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <cassert>
-//#include "managed.h"
+#include "managed.h"
 
 static const double pi = 4 * atan(1.0);
 
