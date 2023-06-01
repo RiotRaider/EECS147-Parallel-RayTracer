@@ -18,9 +18,6 @@ vec3 Phong_Shader::
     Shade_Surface(const Render_World &render_world, const Ray &ray, const Hit &hit,
                   const vec3 &intersection_point, const vec3 &normal, int recursion_depth) const
 {
-    // PIXEL TRACE
-    Debug_Scope scope;
-    // END PIXEL TRACE
     vec3 color;                                                              // variable for final color
     vec3 ambient, diffuse, specular;                                         // variables for total light components
     double intensity, phi;                                                   // variables for the intensity of a light component
@@ -30,12 +27,6 @@ vec3 Phong_Shader::
         ambient *= render_world.ambient_color->Get_Color(hit.uv);
     }
     color = ambient;
-    // PIXEL TRACE
-    if (Debug_Scope::enable)
-    {
-        Pixel_Print("ambient: ", ambient);
-    }
-    // END PIXEL TRACE
     std::pair<Shaded_Object, Hit> obj; // object along ray from intersection back to light source
     vec3 shadeRay;                     // Shade ray for diffuse calculations.
     vec3 reflect;                      // Reflection Ray for specular
@@ -49,29 +40,11 @@ vec3 Phong_Shader::
             obj = render_world.Closest_Intersection(Ray(intersection_point, shadeRay.normalized())); //Find intersection along Shade Ray
             if (shadeRay.magnitude() > obj.second.dist && obj.second.dist != -1) //If the light is further than any object, it is blocked
             {
-                // PIXEL TRACE
-                if (Debug_Scope::enable)
-                {
-                    Pixel_Print("light ", l->name, " not visible; obscured by object ", obj.first.object->name, " at location ", intersection_point + (shadeRay.normalized() * obj.second.dist));
-                }
-                // END PIXEL TRACE
+                    //Removed pixel trace message, but did not change logic as it is functional
             }
             else //Any other case signal it is lit by that source
             {
                 lit = true;
-                // PIXEL TRACE
-                if (Debug_Scope::enable)
-                {
-                    if (obj.second.dist == -1)
-                    {
-                        Pixel_Print("light ", l->name, " visible; closest object on ray too far away (light dist: ", shadeRay.magnitude(), "; object dist: inf)");
-                    }
-                }
-                else
-                {
-                    Pixel_Print("light ", l->name, " visible; closest object on ray too far away (light dist: ", shadeRay.magnitude(), "; object dist: ", obj.second.dist, ")");
-                }
-                // END PIXEL TRACE
             }
         }
         else //If shadows are disabled, always calculate source contribution
@@ -93,23 +66,9 @@ vec3 Phong_Shader::
                 phi = 0;
             }
             specular = (l->Emitted_Light(shadeRay) * pow(phi, specular_power)) * color_specular->Get_Color(hit.uv);
-            // PIXEL TRACE
-            if (Debug_Scope::enable)
-            {
-                Pixel_Print("shading for light ", l->name, ": diffuse: ", diffuse, "; specular: ", specular);
-            }
-            // END PIXEL TRACE
             lit = false;
             color += diffuse + specular;
         }
     }
-
-    // PIXEL TRACE
-    if (Debug_Scope::enable)
-    {
-        Pixel_Print("final color ", color);
-    }
-    // END PIXEL TRACE
-
     return color;
 }
