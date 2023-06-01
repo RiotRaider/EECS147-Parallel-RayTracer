@@ -11,7 +11,7 @@
 #include "ray.h"
 
 #include "support.h"
-#include "kernel.h"
+#include "kernel.cuh"
 
 extern bool enable_acceleration;
 
@@ -113,52 +113,54 @@ void Render_World::Render()
 
     if (gpu_on) {
         //compute on gpu
-        printf("Render image on gpu..."); fflush(stdout);
+        printf("Render image on gpu...\n"); fflush(stdout);
         startTime(&timer);
 
         //launch kernel
         //temporary - test launch kernel with vec class
 
-        /*================================*/
-        DataElement *e = new DataElement;
-        DataElement *f = new DataElement;
+        /*=================TEMPORARY===============*/
+        Hit *e = new Hit;
+        Hit *f = new Hit;
         
-        for (int i = 0; i < 3; i++) {
-            e->color[i] = 10;
+        for (int i = 0; i < 2; i++) {
+            e->uv[i] = 10;
         }
 
-        e->value = 10;
+        e->dist = 100;
+        e->triangle = 5;
 
-        for (int i = 0; i < 3; i++) {
-            f->color[i] = 20;
+        for (int i = 0; i < 2; i++) {
+            f->uv[i] = 20;
         }
 
-        f->value = 100;
+        f->dist = 200;
+        f->triangle = 10;
 
-        printf("On host (print) e: color=(%.2f, %.2f, %.2f), value=%d\n", e->color[0], e->color[1], e->color[2], e->value);
-        printf("On host (print) f: color=(%.2f, %.2f, %.2f), value=%d\n", f->color[0], f->color[1], f->color[2], f->value);
+        printf("On host (print) e: uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
+        printf("On host (print) f: uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", f->uv[0], f->uv[1], f->dist, f->triangle);
 
         //add
-        e->color += f->color;
-        printf("On host (after e + f): color=(%.2f, %.2f, %.2f), value=%d\n", e->color[0], e->color[1], e->color[2], e->value);
+        e->uv += f->uv;
+        printf("On host (after e + f): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
         
         launch_by_pointer(e, f);
 
-        printf("On host (after by-pointer): color=(%.2f, %.2f, %.2f), value=%d\n", e->color[0], e->color[1], e->color[2], e->value);
+        printf("On host (after by-pointer): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
 
         launch_by_ref(*e, *f);
 
-        printf("On host (after by-ref): color=(%.2f, %.2f, %.2f), value=%d\n", e->color[0], e->color[1], e->color[2], e->value);
+        printf("On host (after by-ref): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
 
         launch_by_value(*e, *f);
 
-        printf("On host (after by-value): color=(%.2f, %.2f, %.2f), value=%d\n", e->color[0], e->color[1], e->color[2], e->value);
+        printf("On host (after by-value): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
 
         delete e;
 
         cudaDeviceReset();
 
-        /*================================*/
+        /*=================TEMPORARY===============*/
 
         stopTime(&timer); 
         printf("%f s\n", elapsedTime(timer));

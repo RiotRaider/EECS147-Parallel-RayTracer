@@ -1,5 +1,6 @@
 #ifndef __MANAGED_H__
 #define __MANAGED_H__
+
 #include <cuda_runtime.h>
 
 class Managed 

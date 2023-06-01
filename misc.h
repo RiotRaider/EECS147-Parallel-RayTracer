@@ -4,7 +4,7 @@
 #ifndef __MISC_H__
 #define __MISC_H__
 
-#include "vec.cu"
+#include "vec.cuh"
 #include <iostream>
 
 // Prints out a TODO message at most once.

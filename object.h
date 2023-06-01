@@ -3,7 +3,7 @@
 
 #include "box.h"
 #include "hit.h"
-#include "vec.cu"
+#include "vec.cuh"
 #include "misc.h"
 #include <iosfwd>
 #include <vector>

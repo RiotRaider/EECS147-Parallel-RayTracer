@@ -1,45 +1,51 @@
-#include "vec.cu"
-#include "managed.h"
-#include "kernel.h"
+#include "vec.cuh"
+#include "managed.cuh"
+#include "kernel.cuh"
 
 /*======================TEMPORARY==========================*/
 __global__ 
-void Kernel_by_pointer(DataElement *elem, DataElement *elem2) {
-  printf("On device by pointer (before changes): color=(%.2f, %.2f, %.2f), value=%d\n", elem->color[0], elem->color[1], elem->color[2], elem->value);
+void Kernel_by_pointer(Hit *elem, Hit *elem2) {
+  printf("On device by pointer (before changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem->uv[0], elem->uv[1], elem->dist, elem->triangle);
   
-  //elem->color[0] = 255;
-  elem->value+=10;
+  elem->dist+=10;
+  elem->triangle+=50;
 
-  vec3 color2 = {100, 100, 100};
-  elem->color += elem2->color;
-  elem->color += color2;
+  vec2 uv2 = {25, 25};
+  elem->uv += elem2->uv;
+  elem->uv += uv2;
 
-  printf("On device by pointer (after changes): color=(%.2f, %.2f, %.2f), value=%d\n", elem->color[0], elem->color[1], elem->color[2], elem->value);
+  printf("On device by pointer (after changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem->uv[0], elem->uv[1], elem->dist, elem->triangle);
 }
 
 __global__ 
-void Kernel_by_ref(DataElement &elem, DataElement &elem2) {
-  printf("On device by ref (before changes): color=(%.2f, %.2f, %.2f), value=%d\n", elem.color[0], elem.color[1], elem.color[2], elem.value);
+void Kernel_by_ref(Hit &elem, Hit &elem2) {
+  printf("On device by ref (before changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem.uv[0], elem.uv[1], elem.dist, elem.triangle);
 
-  //elem.color[1] = 255;
-  elem.value+=20;
-  elem.color += elem2.color;
+  elem.dist+=20;
+  elem.triangle+=100;
 
-  printf("On device by ref (after changes): color=(%.2f, %.2f, %.2f), value=%d\n", elem.color[0], elem.color[1], elem.color[2], elem.value);
+  vec2 uv2 = {75, 75};
+  elem.uv += elem2.uv;
+  elem.uv += uv2;
+
+  printf("On device by ref (after changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem.uv[0], elem.uv[1], elem.dist, elem.triangle);
 }
 
 __global__ 
-void Kernel_by_value(DataElement elem, DataElement elem2) {
-  printf("On device by value (before changes): color=(%.2f, %.2f, %.2f), value=%d\n", elem.color[0], elem.color[1], elem.color[2], elem.value);
+void Kernel_by_value(Hit elem, Hit elem2) {
+  printf("On device by value (before changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem.uv[0], elem.uv[1], elem.dist, elem.triangle);
 
-  //elem.color[2] = 255;
-  elem.value+=30;
-  elem.color += elem2.color;
+  elem.dist+=30;
+  elem.triangle+=150;
 
-  printf("On device by value (after changes): color=(%.2f, %.2f, %.2f), value=%d\n", elem.color[0], elem.color[1], elem.color[2], elem.value);
+  vec2 uv2 = {125, 125};
+  elem.uv += elem2.uv;
+  elem.uv += uv2;
+
+  printf("On device by value (after changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem.uv[0], elem.uv[1], elem.dist, elem.triangle);
 }
 
-void launch_by_pointer(DataElement *elem, DataElement *elem2) {
+void launch_by_pointer(Hit *elem, Hit *elem2) {
   dim3 dim_grid(1, 1, 1);
   dim3 dim_block(1, 1, 1);
 
@@ -48,7 +54,7 @@ void launch_by_pointer(DataElement *elem, DataElement *elem2) {
   cudaDeviceSynchronize();
 }
 
-void launch_by_ref(DataElement &elem, DataElement &elem2) {
+void launch_by_ref(Hit &elem, Hit &elem2) {
   dim3 dim_grid(1, 1, 1);
   dim3 dim_block(1, 1, 1);
 
@@ -57,7 +63,7 @@ void launch_by_ref(DataElement &elem, DataElement &elem2) {
   cudaDeviceSynchronize();
 }
 
-void launch_by_value(DataElement elem, DataElement elem2) {
+void launch_by_value(Hit elem, Hit elem2) {
   dim3 dim_grid(1, 1, 1);
   dim3 dim_block(1, 1, 1);
 

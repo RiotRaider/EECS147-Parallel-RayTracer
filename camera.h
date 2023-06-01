@@ -2,7 +2,7 @@
 #define __CAMERA_H__
 
 #include <algorithm>
-#include "vec.cu"
+#include "vec.cuh"
 #include "misc.h"
 
 class Camera
