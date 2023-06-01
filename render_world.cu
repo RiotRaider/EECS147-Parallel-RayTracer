@@ -36,7 +36,6 @@ std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray)
     Hit h;
     std::pair<Shaded_Object, Hit> obj = {o, h};
     Hit hit_test;
-    bool intersect = false;
     for (auto a : this->objects)
     {
         hit_test = a.object->Intersection(ray, -1);
@@ -48,7 +47,6 @@ std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray)
                 obj.first = a;
                 obj.second = hit_test;
             }
-            intersect = true;
         }
     }
     return obj;
