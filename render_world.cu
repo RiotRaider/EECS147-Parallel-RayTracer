@@ -11,6 +11,7 @@
 #include "ray.h"
 
 #include "support.h"
+#include "kernel.h"
 
 extern bool enable_acceleration;
 
@@ -114,6 +115,51 @@ void Render_World::Render()
         //compute on gpu
         printf("Render image on gpu..."); fflush(stdout);
         startTime(&timer);
+
+        //launch kernel
+        //temporary - test launch kernel with vec class
+
+        /*================================*/
+        DataElement *e = new DataElement;
+        DataElement *f = new DataElement;
+        
+        for (int i = 0; i < 3; i++) {
+            e->color[i] = 10;
+        }
+
+        e->value = 10;
+
+        for (int i = 0; i < 3; i++) {
+            f->color[i] = 20;
+        }
+
+        f->value = 100;
+
+        printf("On host (print) e: color=(%.2f, %.2f, %.2f), value=%d\n", e->color[0], e->color[1], e->color[2], e->value);
+        printf("On host (print) f: color=(%.2f, %.2f, %.2f), value=%d\n", f->color[0], f->color[1], f->color[2], f->value);
+
+        //add
+        e->color += f->color;
+        printf("On host (after e + f): color=(%.2f, %.2f, %.2f), value=%d\n", e->color[0], e->color[1], e->color[2], e->value);
+        
+        launch_by_pointer(e, f);
+
+        printf("On host (after by-pointer): color=(%.2f, %.2f, %.2f), value=%d\n", e->color[0], e->color[1], e->color[2], e->value);
+
+        launch_by_ref(*e, *f);
+
+        printf("On host (after by-ref): color=(%.2f, %.2f, %.2f), value=%d\n", e->color[0], e->color[1], e->color[2], e->value);
+
+        launch_by_value(*e, *f);
+
+        printf("On host (after by-value): color=(%.2f, %.2f, %.2f), value=%d\n", e->color[0], e->color[1], e->color[2], e->value);
+
+        delete e;
+
+        cudaDeviceReset();
+
+        /*================================*/
+
         stopTime(&timer); 
         printf("%f s\n", elapsedTime(timer));
     }
@@ -175,26 +221,26 @@ vec3 Render_World::Cast_Ray(const Ray &ray, int recursion_depth) const
         color = obj.first.shader->Shade_Surface(*this, ray, obj.second, q, n, recursion_depth);
     }else{
         if (background_shader == nullptr)
-    {
-        // PIXEL TRACE
-        if (Debug_Scope::enable)
         {
-            Pixel_Print("no background; return black");
+            // PIXEL TRACE
+            if (Debug_Scope::enable)
+            {
+                Pixel_Print("no background; return black");
+            }
+            // END PIXEL TRACE
+            color.make_zero();
         }
-        // END PIXEL TRACE
-        color.make_zero();
-    }
-    else
-    {
-        
-        color = background_shader->Shade_Surface(*this, ray, dummyHit, ray.direction, ray.direction, 1);
-        // PIXEL TRACE
-        if (Debug_Scope::enable)
+        else
         {
-            Pixel_Print("background hit; return color: ", color);
+            
+            color = background_shader->Shade_Surface(*this, ray, dummyHit, ray.direction, ray.direction, 1);
+            // PIXEL TRACE
+            if (Debug_Scope::enable)
+            {
+                Pixel_Print("background hit; return color: ", color);
+            }
+            // END PIXEL TRACE
         }
-        // END PIXEL TRACE
-    }
     }
 
     return color;

@@ -1,7 +1,7 @@
 #ifndef __RAY_H__
 #define __RAY_H__
 
-#include "vec.h"
+#include "vec.cu"
 
 class Object;
 class Ray

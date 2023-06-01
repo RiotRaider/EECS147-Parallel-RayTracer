@@ -5,7 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <limits>
-#include "vec.h"
+#include "vec.cu"
 #include "light.h"
 
 class Color;

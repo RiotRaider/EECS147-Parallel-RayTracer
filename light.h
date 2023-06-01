@@ -1,7 +1,7 @@
 #ifndef __LIGHT_H__
 #define __LIGHT_H__
 
-#include "vec.h"
+#include "vec.cu"
 #include "misc.h"
 #include <iostream>
 #include <limits>

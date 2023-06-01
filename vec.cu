@@ -40,6 +40,7 @@ struct vec
     void fill(T value)
     {for(int i = 0; i < n; i++) x[i] = value;}
 
+    __host__ __device__
     vec& operator += (const vec& v)
     {for(int i = 0; i < n; i++) x[i] += v.x[i]; return *this;}
 

@@ -1,7 +1,7 @@
 #ifndef __HIT_H__
 #define __HIT_H__
 
-#include "vec.h"
+#include "vec.cu"
 
 // Records information about an intersection, which may be needed later for a
 // subsequent call to Normal.
