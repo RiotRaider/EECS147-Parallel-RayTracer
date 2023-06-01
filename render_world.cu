@@ -68,13 +68,13 @@ void Render_World::Render()
 
     if (gpu_on) {
         //compute on gpu
-        printf("Render image on gpu...\n"); fflush(stdout);
+        printf("Render image on gpu..."); fflush(stdout);
         startTime(&timer);
 
         //launch kernel
         //temporary - test launch kernel with vec class
 
-        /*=================TEMPORARY===============*/
+        /*================================*/
         Hit *e = new Hit;
         Hit *f = new Hit;
         
@@ -111,11 +111,9 @@ void Render_World::Render()
 
         printf("On host (after by-value): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
 
-        delete e;
-
         cudaDeviceReset();
 
-        /*=================TEMPORARY===============*/
+        /*================================*/
 
         stopTime(&timer); 
         printf("%f s\n", elapsedTime(timer));

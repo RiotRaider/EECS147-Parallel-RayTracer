@@ -7,7 +7,7 @@ class Ray;
 class Parse;
 struct Hit;
 
-class Shader: public Managed
+class Shader
 {
 public:
     std::string name;
