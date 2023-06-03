@@ -94,7 +94,7 @@ void Render_World::Render()
         vec3 c1 = From_Pixel(c->colors[320*c->number_pixels[0]+280]);
         printf("Pixel of interest(final):(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]);
 
-        //cudaDeviceReset();
+        
         /*================================*/
 
         stopTime(&timer); 
