@@ -8,9 +8,12 @@ void Kernel_by_pointer(Camera *elem) {
   int x=elem->number_pixels[0];
   int y=elem->number_pixels[1];
   __shared__ vec3 color;
+  ivec2 ind;
+  ind[0]=280;
+  ind[1]=320;
   color[threadIdx.x] = 1;
   if(threadIdx.x==0){
-    elem->colors[320*x+280]=Pixel_Color(color);
+    elem->Set_Pixel(ind,Pixel_Color(color));
     printf("On device by pointer \n");
   }
   __syncthreads();
@@ -23,9 +26,12 @@ void Kernel_by_ref(Camera &elem) {
   int x=elem.number_pixels[0];
   int y=elem.number_pixels[1];
   __shared__ vec3 color;
+  ivec2 ind;
+  ind[0]=280;
+  ind[1]=320;
   color[threadIdx.x] = 1;
   if(threadIdx.x==0){
-    elem.colors[320*x+280]=Pixel_Color(color);
+    elem.Set_Pixel(ind,Pixel_Color(color));
     printf("On device by reference \n");
   }
   __syncthreads();
@@ -37,9 +43,12 @@ void Kernel_by_value(Camera elem) {
   int x=elem.number_pixels[0];
   int y=elem.number_pixels[1];
   __shared__ vec3 color;
+  ivec2 ind;
+  ind[0]=280;
+  ind[1]=320;
   color[threadIdx.x] = 1;
   if(threadIdx.x==0){
-    elem.colors[320*x+280]=Pixel_Color(color);
+    elem.Set_Pixel(ind,Pixel_Color(color));
     printf("On device by value \n");
   }
   __syncthreads();
