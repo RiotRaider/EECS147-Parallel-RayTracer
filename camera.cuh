@@ -4,8 +4,9 @@
 #include <algorithm>
 #include "vec.cuh"
 #include "misc.h"
+#include "managed.cuh"
 
-class Camera
+class Camera : public Managed
 {
 public:
     // Describes camera in space
@@ -25,6 +26,7 @@ public:
     Pixel* colors; // Pixel data; row-major order
     
     Camera();
+    Camera(const Camera& c);
     ~Camera();
 
     // Used for setting up camera parameters
@@ -42,6 +44,7 @@ public:
     }
 
     // Call to set the color of a pixel
+    __host__ __device__
     void Set_Pixel(const ivec2& pixel_index,const Pixel& color)
     {
         int i=pixel_index[0];

@@ -68,51 +68,38 @@ void Render_World::Render()
 
     if (gpu_on) {
         //compute on gpu
-        printf("Render image on gpu..."); fflush(stdout);
+        printf("Render image on gpu...\n"); fflush(stdout);
         startTime(&timer);
 
         //launch kernel
         //temporary - test launch kernel with vec class
 
         /*================================*/
-        Hit *e = new Hit;
-        Hit *f = new Hit;
-        
-        for (int i = 0; i < 2; i++) {
-            e->uv[i] = 10;
-        }
+        Camera * c = new Camera(camera);
+        c->Set_Resolution(ivec2(480,640));
 
-        e->dist = 100;
-        e->triangle = 5;
+        printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);
+        // vec3 c1 = From_Pixel(c->colors[320*c->number_pixels[0]+280]);
+        // vec3 c2 = From_Pixel(c->colors[100*c->number_pixels[0]+250]);
+        // vec3 c3 = From_Pixel(c->colors[80*c->number_pixels[0]+75]) ;
+        // printf("Pixel of interest 1:(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]);
+        // printf("Pixels of interest 2:(%i,%i) : (%f, %f, %f)\n",250,100,c2[0],c2[1],c2[2]);
+        // printf("Pixels of interest 3:(%i,%i) : (%f, %f, %f)\n",75,80,c3[0],c3[1],c3[2]);     
+        launch_by_pointer(c);
 
-        for (int i = 0; i < 2; i++) {
-            f->uv[i] = 20;
-        }
+        launch_by_ref(*c);
 
-        f->dist = 200;
-        f->triangle = 10;
+        launch_by_value(*c);
 
-        printf("On host (print) e: uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
-        printf("On host (print) f: uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", f->uv[0], f->uv[1], f->dist, f->triangle);
-
-        //add
-        e->uv += f->uv;
-        printf("On host (after e + f): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
-        
-        launch_by_pointer(e, f);
-
-        printf("On host (after by-pointer): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
-
-        launch_by_ref(*e, *f);
-
-        printf("On host (after by-ref): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
-
-        launch_by_value(*e, *f);
-
-        printf("On host (after by-value): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
+        printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);
+        // c1 = From_Pixel(c->colors[320*c->number_pixels[0]+280]);
+        // c2 = From_Pixel(c->colors[100*c->number_pixels[0]+250]);
+        // c3 = From_Pixel(c->colors[80*c->number_pixels[0]+75]) ;
+        // printf("Pixel of interest 1:(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]);
+        // printf("Pixels of interest 2:(%i,%i) : (%f, %f, %f)\n",250,100,c2[0],c2[1],c2[2]);
+        // printf("Pixels of interest 3:(%i,%i) : (%f, %f, %f)\n",75,80,c3[0],c3[1],c3[2]);
 
         cudaDeviceReset();
-
         /*================================*/
 
         stopTime(&timer); 

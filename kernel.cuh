@@ -1,7 +1,7 @@
 #ifndef __KERNEL_H__
 #define __KERNEL_H__
 
-#include "hit.h"
+#include "camera.cuh"
 
 /*======================TEMPORARY==========================*/
 /*struct DataElement : public Managed
@@ -12,15 +12,15 @@
 */
 
 
-__global__ void Kernel_by_pointer(Hit *elem, Hit *elem2);
+__global__ void Kernel_by_pointer(Camera *elem);
 
-__global__ void Kernel_by_ref(Hit &elem, Hit &elem2);
+__global__ void Kernel_by_ref(Camera &elem);
 
-__global__ void Kernel_by_value(Hit elem, Hit elem2);
+__global__ void Kernel_by_value(Camera elem);
 
-void launch_by_pointer(Hit *elem, Hit *elem2);
-void launch_by_ref(Hit &elem, Hit &elem2);
-void launch_by_value(Hit elem, Hit elem2);
+void launch_by_pointer(Camera *elem);
+void launch_by_ref(Camera &elem);
+void launch_by_value(Camera elem);
 
 
 /*======================TEMPORARY==========================*/
