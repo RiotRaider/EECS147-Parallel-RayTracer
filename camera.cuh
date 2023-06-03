@@ -34,6 +34,7 @@ public:
         const vec3& look_at_point,const vec3& pseudo_up_vector);
     void Focus_Camera(double focal_distance,double aspect_ratio,
         double field_of_view);
+    __host__ __device__
     void Set_Resolution(const ivec2& number_pixels_input);
 
     // Used for determining the where pixels are

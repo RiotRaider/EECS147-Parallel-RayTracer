@@ -75,31 +75,26 @@ void Render_World::Render()
         //temporary - test launch kernel with vec class
 
         /*================================*/
-        Camera * c = new Camera(camera);
+        Camera * c = new Camera();
         c->Set_Resolution(ivec2(480,640));
 
-        printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);
-        // vec3 c1 = From_Pixel(c->colors[320*c->number_pixels[0]+280]);
-        // vec3 c2 = From_Pixel(c->colors[100*c->number_pixels[0]+250]);
-        // vec3 c3 = From_Pixel(c->colors[80*c->number_pixels[0]+75]) ;
-        // printf("Pixel of interest 1:(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]);
-        // printf("Pixels of interest 2:(%i,%i) : (%f, %f, %f)\n",250,100,c2[0],c2[1],c2[2]);
-        // printf("Pixels of interest 3:(%i,%i) : (%f, %f, %f)\n",75,80,c3[0],c3[1],c3[2]);     
+        printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);    
+        
+        
         launch_by_pointer(c);
+
 
         launch_by_ref(*c);
 
+
         launch_by_value(*c);
 
-        printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);
-        // c1 = From_Pixel(c->colors[320*c->number_pixels[0]+280]);
-        // c2 = From_Pixel(c->colors[100*c->number_pixels[0]+250]);
-        // c3 = From_Pixel(c->colors[80*c->number_pixels[0]+75]) ;
-        // printf("Pixel of interest 1:(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]);
-        // printf("Pixels of interest 2:(%i,%i) : (%f, %f, %f)\n",250,100,c2[0],c2[1],c2[2]);
-        // printf("Pixels of interest 3:(%i,%i) : (%f, %f, %f)\n",75,80,c3[0],c3[1],c3[2]);
 
-        cudaDeviceReset();
+        printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);
+        vec3 c1 = From_Pixel(c->colors[320*c->number_pixels[0]+280]);
+        printf("Pixel of interest(final):(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]);
+
+        //cudaDeviceReset();
         /*================================*/
 
         stopTime(&timer); 
