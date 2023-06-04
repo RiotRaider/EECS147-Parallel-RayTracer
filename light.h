@@ -7,11 +7,12 @@
 #include <limits>
 #include <math.h>
 #include <vector>
+#include "managed.cuh"
 
 class Ray;
 class Parse;
 
-class Light
+class Light: public Managed
 {
 public:
     std::string name;

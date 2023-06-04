@@ -2,7 +2,7 @@
 #define __PARSE_H__
 
 #include <map>
-#include "object.h"
+#include "object.cuh"
 #include "light.h"
 #include "shader.h"
 #include "color.h"

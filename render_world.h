@@ -4,7 +4,7 @@
 #include <vector>
 #include <utility>
 #include "camera.h"
-#include "object.h"
+#include "object.cuh"
 // #include "acceleration.h"
 
 class Light;

@@ -4,7 +4,7 @@
 #include "shader.h"
 #include "fixed_color.h"
 
-class Flat_Shader : public Shader
+class Flat_Shader : public Shader, public Managed
 {
 public:
     const Color* color = nullptr;

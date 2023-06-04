@@ -14,3 +14,9 @@ This compiles:
 
 To run unaccelerated ray tracer:
     ./ray_tracer -i tests-flat/00.txt
+
+Debugging:
+    cuda-memcheck --leak-check full ./ray_tracer -i tests-flat/00.txt
+    
+    cuda-gdb
+    run ./ray_tracer -i tests-flat/00.txt

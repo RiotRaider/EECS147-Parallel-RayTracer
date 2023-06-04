@@ -6,7 +6,7 @@
 
 #include "render_world.h"
 #include "flat_shader.h"
-#include "object.h"
+#include "object.cuh"
 #include "light.h"
 #include "ray.cuh"
 
@@ -17,6 +17,7 @@ extern bool enable_acceleration;
 
 Render_World::~Render_World()
 {
+    /*
     for (auto a : all_objects)
         delete a;
     for (auto a : all_shaders)
@@ -25,6 +26,7 @@ Render_World::~Render_World()
         delete a;
     for (auto a : lights)
         delete a;
+        */
 }
 
 // Find and return the Hit structure for the closest intersection.  Be careful
@@ -137,6 +139,11 @@ void Render_World::Render()
         printf("On host (after by-val) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
             q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
         
+        //delete these pointers
+        delete e;
+        delete f;
+        delete q;
+
         cudaDeviceReset();
 
         /*================================*/

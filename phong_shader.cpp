@@ -1,6 +1,6 @@
 #include "light.h"
 #include "parse.h"
-#include "object.h"
+#include "object.cuh"
 #include "phong_shader.h"
 #include "ray.cuh"
 #include "render_world.h"

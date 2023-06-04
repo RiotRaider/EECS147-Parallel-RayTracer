@@ -10,7 +10,7 @@
 
 class Color;
 
-class Point_Light : public Light
+class Point_Light : public Light, public Managed
 {
 public:
     const Color* color = nullptr; // RGB color components
