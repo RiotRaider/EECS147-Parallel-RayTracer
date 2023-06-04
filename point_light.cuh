@@ -6,7 +6,7 @@
 #include <iostream>
 #include <limits>
 #include "vec.cuh"
-#include "light.h"
+#include "light.cuh"
 
 class Color;
 
@@ -16,6 +16,7 @@ public:
     const Color* color = nullptr; // RGB color components
     double brightness = 0;
 
+    Point_Light(const Point_Light& l);
     Point_Light(const Parse* parse,std::istream& in);
     virtual ~Point_Light() = default;
 

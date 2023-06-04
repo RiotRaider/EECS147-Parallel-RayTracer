@@ -3,7 +3,7 @@
 
 struct Hit;
 
-class Color
+class Color: public Managed
 {
 public:
     std::string name;

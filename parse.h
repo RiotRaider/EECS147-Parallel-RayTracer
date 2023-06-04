@@ -3,7 +3,7 @@
 
 #include <map>
 #include "object.h"
-#include "light.h"
+#include "light.cuh"
 #include "shader.h"
 #include "color.h"
 

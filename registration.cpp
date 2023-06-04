@@ -3,7 +3,7 @@
 #include "parse.h"
 #include "phong_shader.h"
 #include "plane.h"
-#include "point_light.h"
+#include "point_light.cuh"
 //#include "reflective_shader.h"
 #include "sphere.h"
 //#include "texture.h"

@@ -15,7 +15,7 @@ static const double small_t = 1e-4;
 
 class Ray;
 
-class Object
+class Object: public Managed
 {
 public:
     // Useful for debugging

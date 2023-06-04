@@ -7,7 +7,7 @@
 #include "render_world.h"
 #include "flat_shader.h"
 #include "object.h"
-#include "light.h"
+#include "light.cuh"
 #include "ray.h"
 
 #include "support.h"

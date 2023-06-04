@@ -1,4 +1,4 @@
-#include "light.h"
+#include "light.cuh"
 #include "parse.h"
 #include "object.h"
 #include "phong_shader.h"
