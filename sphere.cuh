@@ -13,7 +13,7 @@ class Sphere : public Object, public Managed
 public:
     Sphere(const Parse* parse,std::istream& in);
 
-    ~Sphere();
+    virtual ~Sphere() = default;
 
     __host__ __device__
     virtual Hit Intersection(const Ray& ray, int part) const override;

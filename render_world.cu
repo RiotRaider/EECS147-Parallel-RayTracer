@@ -17,7 +17,7 @@ extern bool enable_acceleration;
 
 Render_World::~Render_World()
 {
-    /*
+    
     for (auto a : all_objects)
         delete a;
     for (auto a : all_shaders)
@@ -26,7 +26,8 @@ Render_World::~Render_World()
         delete a;
     for (auto a : lights)
         delete a;
-        */
+    
+        
 }
 
 // Find and return the Hit structure for the closest intersection.  Be careful

@@ -25,7 +25,7 @@ public:
     int num_parts=1;
 
     Object() = default;
-    virtual ~Object() = default;
+    //virtual ~Object() = default;
 
     // Check for an intersection in the range [small_t,inf).  If there are
     // multiple intersections, return the closest one.  If there are no

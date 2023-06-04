@@ -8,10 +8,6 @@ Sphere::Sphere(const Parse* parse, std::istream& in)
     in>>name>>center>>radius;
 }
 
-Sphere::~Sphere() {
-    
-}
-
 // Determine if the ray intersects with the sphere
 __host__ __device__
 Hit Sphere::Intersection(const Ray& ray, int part) const

@@ -12,10 +12,6 @@ Plane::Plane(const Parse* parse,std::istream& in)
     normal=normal.normalized();
 }
 
-Plane::~Plane() {
-    
-}
-
 // Intersect with the plane.  The plane's normal points outside.
 __host__ __device__
 Hit Plane::Intersection(const Ray& ray, int part) const

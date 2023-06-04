@@ -12,7 +12,7 @@ public:
     vec3 normal;
 
     Plane(const Parse* parse,std::istream& in);
-    ~Plane();
+    virtual ~Plane() = default;
 
     __host__ __device__
     virtual Hit Intersection(const Ray& ray, int part) const override;
