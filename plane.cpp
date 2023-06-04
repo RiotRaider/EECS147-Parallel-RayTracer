@@ -1,8 +1,8 @@
 //Student Name: Justin Sanders
 //Student ID: 862192429
 #include "plane.h"
-#include "hit.h"
-#include "ray.h"
+#include "hit.cuh"
+#include "ray.cuh"
 #include <cfloat>
 #include <limits>
 

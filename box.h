@@ -1,7 +1,7 @@
 #ifndef __BOX_H__
 #define __BOX_H__
 
-#include "ray.h"
+#include "ray.cuh"
 #include "misc.h"
 #include <limits>
 

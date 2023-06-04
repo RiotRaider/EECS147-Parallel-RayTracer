@@ -2,9 +2,10 @@
 #define __RAY_H__
 
 #include "vec.cuh"
+#include "managed.cuh"
 
 class Object;
-class Ray
+class Ray: public Managed
 {
 public:
     vec3 endpoint; // endpoint of the ray where t=0
@@ -18,6 +19,7 @@ public:
         :endpoint(endpoint_input),direction(direction_input.normalized())
     {}
 
+    __host__ __device__ 
     vec3 Point(double t) const
     {
         return endpoint+direction*t;

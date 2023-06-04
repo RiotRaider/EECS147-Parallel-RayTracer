@@ -18,6 +18,7 @@ struct Hit: public Managed
     // Barycentric weights of intersection within triangle (for meshes)
     vec2 uv = {};
 
+    __host__ __device__ 
     bool Valid() const {return dist>=0;}
 };
 

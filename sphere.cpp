@@ -1,7 +1,7 @@
 //Student Name: Justin Sanders
 //Student ID: 862192429
 #include "sphere.h"
-#include "ray.h"
+#include "ray.cuh"
 
 Sphere::Sphere(const Parse* parse, std::istream& in)
 {

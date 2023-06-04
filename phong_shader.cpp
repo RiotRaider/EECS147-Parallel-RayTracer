@@ -2,7 +2,7 @@
 #include "parse.h"
 #include "object.h"
 #include "phong_shader.h"
-#include "ray.h"
+#include "ray.cuh"
 #include "render_world.h"
 
 Phong_Shader::Phong_Shader(const Parse *parse, std::istream &in)

@@ -8,7 +8,7 @@
 #include "flat_shader.h"
 #include "object.h"
 #include "light.h"
-#include "ray.h"
+#include "ray.cuh"
 
 #include "support.h"
 #include "kernel.cuh"
@@ -75,6 +75,9 @@ void Render_World::Render()
         //temporary - test launch kernel with vec class
 
         /*================================*/
+
+        //Hit
+        
         Hit *e = new Hit;
         Hit *f = new Hit;
         
@@ -92,31 +95,54 @@ void Render_World::Render()
         f->dist = 200;
         f->triangle = 10;
 
-        printf("On host (print) e: uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
+        printf("\nHit:\nOn host (print) e: uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
         printf("On host (print) f: uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", f->uv[0], f->uv[1], f->dist, f->triangle);
 
         //add
         e->uv += f->uv;
         printf("On host (after e + f): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
         
-        launch_by_pointer(e, f);
-
+        launch_by_pointer_hit(e, f);
         printf("On host (after by-pointer): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
 
-        launch_by_ref(*e, *f);
-
+        launch_by_ref_hit(*e, *f);
         printf("On host (after by-ref): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
 
-        launch_by_value(*e, *f);
-
+        launch_by_value_hit(*e, *f);
         printf("On host (after by-value): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
+        
 
+        //Ray
+        Ray *q = new Ray;
+        //Ray *r = new Ray;
+        
+        q->endpoint = {10, 20, 30};
+        q->direction = {0.10, 0.20, 0.30};
+        
+        vec3 q_ray_point = q->Point(5);
+
+        printf("\nRay:\nOn host (print) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
+            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
+        
+        
+        launch_by_pointer_ray(q);
+        printf("On host (after by-pointer) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
+            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
+        
+        launch_by_ref_ray(*q);
+        printf("On host (after by-ref) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
+            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
+
+        launch_by_value_ray(*q);
+        printf("On host (after by-val) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
+            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
+        
         cudaDeviceReset();
 
         /*================================*/
 
         stopTime(&timer); 
-        printf("%f s\n", elapsedTime(timer));
+        printf("\n...%f s\n", elapsedTime(timer));
     }
     else {
         //compute on cpu

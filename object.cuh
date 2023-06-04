@@ -2,8 +2,9 @@
 #define __OBJECT_H__
 
 #include "box.h"
-#include "hit.h"
+#include "hit.cuh"
 #include "vec.cuh"
+#include "managed.cuh"
 #include "misc.h"
 #include <iosfwd>
 #include <vector>
