@@ -3,6 +3,9 @@
 
 #include "hit.cuh"
 #include "ray.cuh"
+#include "object.cuh"
+#include "plane.cuh"
+#include "sphere.cuh"
 
 /*======================TEMPORARY==========================*/
 
@@ -23,6 +26,15 @@ __global__ void kernel_by_value_ray(Ray ray);
 void launch_by_pointer_ray(Ray *ray);
 void launch_by_ref_ray(Ray &ray);
 void launch_by_value_ray(Ray ray);
+
+//Object
+__global__ void kernel_by_pointer_object(Plane *obj);
+__global__ void kernel_by_ref_object(Plane &obj);
+__global__ void kernel_by_value_object(Plane obj);
+
+void launch_by_pointer_object(Plane *obj);
+void launch_by_ref_object(Plane &obj);
+void launch_by_value_object(Plane obj);
 
 /*======================TEMPORARY==========================*/
 

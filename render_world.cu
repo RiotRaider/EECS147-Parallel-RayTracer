@@ -13,11 +13,14 @@
 #include "support.h"
 #include "kernel.cuh"
 
+#include "plane.cuh"
+#include "sphere.cuh"
+
 extern bool enable_acceleration;
 
 Render_World::~Render_World()
 {
-    
+    /*
     for (auto a : all_objects)
         delete a;
     for (auto a : all_shaders)
@@ -27,7 +30,7 @@ Render_World::~Render_World()
     for (auto a : lights)
         delete a;
     
-        
+        */
 }
 
 // Find and return the Hit structure for the closest intersection.  Be careful
@@ -117,8 +120,7 @@ void Render_World::Render()
 
         //Ray
         Ray *q = new Ray;
-        //Ray *r = new Ray;
-        
+            
         q->endpoint = {10, 20, 30};
         q->direction = {0.10, 0.20, 0.30};
         
@@ -140,6 +142,57 @@ void Render_World::Render()
         printf("On host (after by-val) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
             q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
         
+
+        //Plane - Object
+        Plane *p = new Plane;
+        Sphere *s = new Sphere;
+        Ray *r = new Ray;
+
+        //Plane
+        p->x = {5, 10, 5};
+        p->normal = {1, 2, 3};
+
+        p->normal.normalized();
+        
+        r->endpoint = {1, 2, 3};
+        r->direction = {1, 2, 3};
+
+        Hit hp = p->Intersection(*r, 0);
+        vec3 p_normal = p->Normal(*r, hp);
+
+        //Sphere
+        s->center = {5, 10, 5};
+        s->radius = 2.0;
+
+        Hit hs = s->Intersection(*r, 0);
+        vec3 s_normal = s->Normal(*r, hs);
+
+        printf("\nPlane:\nOn host (print) p: x=(%.2f, %.2f, %.2f), normal=(%.2f, %.2f, %.2f), hp=(dist=%.2f), p_normal=(%.2f, %.2f, %.2f)\n", 
+            p->x[0], p->x[1], p->x[2], p->normal[0], p->normal[1], p->normal[2], hp.dist, p_normal[0], p_normal[1], p_normal[2]);
+        
+        launch_by_pointer_object(p);
+        printf("On host (after by-pointer) p: x=(%.2f, %.2f, %.2f), normal=(%.2f, %.2f, %.2f), hp=(dist=%.2f), p_normal=(%.2f, %.2f, %.2f)\n", 
+            p->x[0], p->x[1], p->x[2], p->normal[0], p->normal[1], p->normal[2], hp.dist, p_normal[0], p_normal[1], p_normal[2]);
+        
+        printf("\nSphere\nOn host (print) s: center=(%.2f, %.2f, %.2f), radius=%.2f, hs=(dist=%.2f), s_normal=(%.2f, %.2f, %.2f)\n", 
+            s->center[0], s->center[1], s->center[2], s->radius, hs.dist, s_normal[0], s_normal[1], s_normal[2]);
+        
+
+        /*
+        launch_by_pointer_ray(q);
+        printf("On host (after by-pointer) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
+            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
+        
+        launch_by_ref_ray(*q);
+        printf("On host (after by-ref) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
+            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
+
+        launch_by_value_ray(*q);
+        printf("On host (after by-val) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
+            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
+
+        */
+
         //delete these pointers
         delete e;
         delete f;

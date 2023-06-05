@@ -144,4 +144,76 @@ void launch_by_value_ray(Ray ray) {
   cudaDeviceSynchronize();
 }
 
+//Plane
+__global__ 
+void kernel_by_pointer_object(Plane *obj) {
+  Ray r;
+
+  r.endpoint = {10, 20, 10};
+  r.direction = {2, 3, 4};
+
+  Hit h = obj->Intersection(r, 0);
+  vec3 normal = obj->Normal(r, h);
+
+  printf("On device by pointer (after changes) obj: h=(dist=%.2f), normal=(%.2f, %.2f, %.2f)\n", 
+            h.dist, normal[0], normal[1], normal[2]);
+}
+
+__global__ 
+void kernel_by_ref_object(Plane &obj) {
+  /*printf("On device by ref (before changes) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f)\n", 
+            ray.endpoint[0], ray.endpoint[1], ray.endpoint[2], ray.direction[0], ray.direction[1], ray.direction[2]);
+  
+  ray.endpoint = {30, 40, 50};
+  ray.direction = {10, 20, 30};
+
+  vec3 ray_point = ray.Point(5);
+
+  printf("On device by ref (after changes) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
+            ray.endpoint[0], ray.endpoint[1], ray.endpoint[2], ray.direction[0], ray.direction[1], ray.direction[2], ray_point[0], ray_point[1], ray_point[2]);
+  */
+}
+
+__global__ 
+void kernel_by_value_object(Plane obj) {
+  /*printf("On device by val (before changes) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f)\n", 
+            ray.endpoint[0], ray.endpoint[1], ray.endpoint[2], ray.direction[0], ray.direction[1], ray.direction[2]);
+  
+  ray.endpoint = {40, 50, 60};
+  ray.direction = {5, 10, 15};
+
+  vec3 ray_point = ray.Point(5);
+
+  printf("On device by val (after changes) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
+            ray.endpoint[0], ray.endpoint[1], ray.endpoint[2], ray.direction[0], ray.direction[1], ray.direction[2], ray_point[0], ray_point[1], ray_point[2]);
+  */
+}
+
+void launch_by_pointer_object(Plane *obj) {
+  dim3 dim_grid(1, 1, 1);
+  dim3 dim_block(1, 1, 1);
+
+  //printf("launch by pointer: name=(%d, %d, %d), value=%d\n", hit->color[0], hit->color[1], hit->color[2], hit->value);
+  kernel_by_pointer_object<<< dim_grid, dim_block >>>(obj);
+  cudaDeviceSynchronize();
+}
+
+void launch_by_ref_object(Plane &obj) {
+  dim3 dim_grid(1, 1, 1);
+  dim3 dim_block(1, 1, 1);
+
+  //printf("launch by ref: name=(%d, %d, %d), value=%d\n", hit.color[0], hit.color[1], hit.color[2], hit.value);
+  kernel_by_ref_object<<< dim_grid, dim_block >>>(obj);
+  cudaDeviceSynchronize();
+}
+
+void launch_by_value_object(Plane obj) {
+  dim3 dim_grid(1, 1, 1);
+  dim3 dim_block(1, 1, 1);
+
+  //printf("launch by value: name=(%d, %d, %d), value=%d\n", hit.color[0], hit.color[1], hit.color[2], hit.value);
+  kernel_by_value_object<<< dim_grid, dim_block >>>(obj);
+  cudaDeviceSynchronize();
+}
+
 /*======================TEMPORARY==========================*/

@@ -7,11 +7,14 @@ class Parse;
 
 class Sphere : public Object, public Managed
 {
+public:
     vec3 center;
     double radius;
 
-public:
     Sphere(const Parse* parse,std::istream& in);
+    Sphere() 
+        :center(0,0,0), radius(0.0)
+    {}
 
     virtual ~Sphere() = default;
 

@@ -12,6 +12,11 @@ public:
     vec3 normal;
 
     Plane(const Parse* parse,std::istream& in);
+    
+    Plane()
+        :x(0,0,0), normal(0,0,1)
+    {}
+
     virtual ~Plane() = default;
 
     __host__ __device__
