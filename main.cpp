@@ -94,7 +94,7 @@ int main(int argc, char** argv)
     }
     if(!input_file) Usage(argv[0]);
 
-    Render_World render_world;
+    Render_World* render_world = new Render_World();
     
     // Parse test scene file
     Parse parse;
@@ -107,10 +107,10 @@ int main(int argc, char** argv)
         exit(1);
     }
     assert(fin);
-    parse.Parse_Input(render_world,fin);
+    parse.Parse_Input(*render_world,fin);
     
     // Render the image
-    render_world.Render();
+    render_world->Render();
 
     // For debugging.  Render only the pixel specified on the commandline.
     // Useful for printing out information about a single pixel.
@@ -121,14 +121,14 @@ int main(int argc, char** argv)
         Debug_Scope::enable = true;
 
         // Render just the pixel we are debugging
-        render_world.Render_Pixel(ivec2(test_x,test_y));
+        render_world->Render_Pixel(ivec2(test_x,test_y));
 
         // Mark the pixel we are testing green in the output image.
-        render_world.camera.Set_Pixel(ivec2(test_x,test_y),0x00ff00ff);
+        render_world->camera.Set_Pixel(ivec2(test_x,test_y),0x00ff00ff);
     }
 
     // Save the rendered image to disk
-    Dump_png(render_world.camera.colors,render_world.camera.number_pixels[0],render_world.camera.number_pixels[1],output_file);
+    Dump_png(render_world->camera.colors,render_world->camera.number_pixels[0],render_world->camera.number_pixels[1],output_file);
     
     // If a solution is specified, compare against it.
     if(solution_file)
@@ -138,14 +138,14 @@ int main(int argc, char** argv)
 
         // Read solution from disk
         Read_png(data_sol,width,height,solution_file);
-        assert(render_world.camera.number_pixels[0]==width);
-        assert(render_world.camera.number_pixels[1]==height);
+        assert(render_world->camera.number_pixels[0]==width);
+        assert(render_world->camera.number_pixels[1]==height);
 
         // For each pixel, check to see if it matches solution
         double error = 0, total = 0;
         for(int i=0; i<height*width; i++)
         {
-            vec3 a=From_Pixel(render_world.camera.colors[i]);
+            vec3 a=From_Pixel(render_world->camera.colors[i]);
             vec3 b=From_Pixel(data_sol[i]);
             for(int c=0; c<3; c++)
             {

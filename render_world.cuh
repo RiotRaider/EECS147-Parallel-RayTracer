@@ -59,8 +59,19 @@ public:
 //     Acceleration acceleration;
 
     Render_World() = default;
-    Render_World(const Render_World& r){
-        ambient_color = r.ambient_color;
+    Render_World(const Render_World& r)
+        :camera(r.camera), gpu_on(r.gpu_on),ambient_intensity(r.ambient_intensity),num_shaded(r.num_shaded),num_lights(r.num_lights),num_objects(r.num_objects),
+        num_shaders(r.num_shaders),num_colors(r.num_colors),enable_shadows(r.enable_shadows),recursion_depth_limit(r.recursion_depth_limit)
+    {
+        ambient_color=r.ambient_color;
+        background_shader=r.background_shader;
+        for(int i = 0; i<num_shaded;i++){
+            objects[i] = r.objects[i];
+        }
+        for(int i = 0; i<num_lights;i++){
+            cudaMallocManaged(&lights[i],sizeof(Light)*1)
+        }
+
     }
     ~Render_World();
 

@@ -115,7 +115,7 @@ void Kernel_Render_Pixel(Render_World& r){
     __syncthreads();
     if((threadIdx.x+blockDim.x*blockIdx.x) < r.camera.number_pixels[0] && (threadIdx.y+blockDim.y*blockIdx.y) < r.camera.number_pixels[1])
     {
-        //r.Render_Pixel(ivec2((threadIdx.x+blockDim.x*blockIdx.x),(threadIdx.y+blockDim.y*blockIdx.y)));
+        r.Render_Pixel(ivec2((threadIdx.x+blockDim.x*blockIdx.x),(threadIdx.y+blockDim.y*blockIdx.y)));
     }
     __syncthreads();
 }
