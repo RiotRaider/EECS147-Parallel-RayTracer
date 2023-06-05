@@ -50,6 +50,9 @@ public:
 //     Acceleration acceleration;
 
     Render_World() = default;
+    Render_World(const Render_World& r){
+        ambient_color = r.ambient_color;
+    }
     ~Render_World();
 
     __host__ __device__
