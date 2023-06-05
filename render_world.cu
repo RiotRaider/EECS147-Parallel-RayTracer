@@ -170,11 +170,12 @@ void Render_World::Render()
         printf("\nPlane:\nOn host (print) p: x=(%.2f, %.2f, %.2f), normal=(%.2f, %.2f, %.2f), hp=(dist=%.2f), p_normal=(%.2f, %.2f, %.2f)\n", 
             p->x[0], p->x[1], p->x[2], p->normal[0], p->normal[1], p->normal[2], hp.dist, p_normal[0], p_normal[1], p_normal[2]);
         
-        launch_by_pointer_object(p);
+        launch_by_pointer_plane(p);
+
         printf("On host (after by-pointer) p: x=(%.2f, %.2f, %.2f), normal=(%.2f, %.2f, %.2f), hp=(dist=%.2f), p_normal=(%.2f, %.2f, %.2f)\n", 
             p->x[0], p->x[1], p->x[2], p->normal[0], p->normal[1], p->normal[2], hp.dist, p_normal[0], p_normal[1], p_normal[2]);
         
-        printf("\nSphere\nOn host (print) s: center=(%.2f, %.2f, %.2f), radius=%.2f, hs=(dist=%.2f), s_normal=(%.2f, %.2f, %.2f)\n", 
+        printf("\nSphere:\nOn host (print) s: center=(%.2f, %.2f, %.2f), radius=%.2f, hs=(dist=%.2f), s_normal=(%.2f, %.2f, %.2f)\n", 
             s->center[0], s->center[1], s->center[2], s->radius, hs.dist, s_normal[0], s_normal[1], s_normal[2]);
         
 

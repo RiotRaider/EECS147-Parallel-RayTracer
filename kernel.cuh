@@ -27,14 +27,14 @@ void launch_by_pointer_ray(Ray *ray);
 void launch_by_ref_ray(Ray &ray);
 void launch_by_value_ray(Ray ray);
 
-//Object
-__global__ void kernel_by_pointer_object(Plane *obj);
-__global__ void kernel_by_ref_object(Plane &obj);
-__global__ void kernel_by_value_object(Plane obj);
+//Plane
+__global__ void kernel_by_pointer_plane(Plane *p);
+//__global__ void kernel_by_ref_plane(Plane &p);
+//__global__ void kernel_by_value_plane(Plane p);
 
-void launch_by_pointer_object(Plane *obj);
-void launch_by_ref_object(Plane &obj);
-void launch_by_value_object(Plane obj);
+void launch_by_pointer_plane(Plane *p);
+//void launch_by_ref_plane(Plane &p);
+//void launch_by_value_plane(Plane p);
 
 /*======================TEMPORARY==========================*/
 
