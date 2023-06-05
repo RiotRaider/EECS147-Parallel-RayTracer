@@ -22,29 +22,29 @@ void Parse::Parse_Input(Render_World& render_world, std::istream& in)
         {
             auto o=it->second(this,ss);
             objects[o->name]=o;
-            render_world.all_objects.push_back(o);
+            render_world.all_objects[render_world.num_objects++]=o;
         }
         else if(auto it=parse_shaders.find(token); it!=parse_shaders.end())
         {
             auto s=it->second(this,ss);
             shaders[s->name]=s;
-            render_world.all_shaders.push_back(s);
+            render_world.all_shaders[render_world.num_shaders++]=s;
         }
         else if(auto it=parse_lights.find(token); it!=parse_lights.end())
         {
-            render_world.lights.push_back(it->second(this,ss));
+            render_world.lights[render_world.num_lights++]=it->second(this,ss);
         }
         else if(auto it=parse_colors.find(token); it!=parse_colors.end())
         {
             auto c=it->second(this,ss);
             colors[c->name]=c;
-            render_world.all_colors.push_back(c);
+            render_world.all_colors[render_world.num_colors++]=c;
         }
         else if(token=="shaded_object")
         {
             auto o=Get_Object(ss);
             auto s=Get_Shader(ss);
-            render_world.objects.push_back({o,s});
+            render_world.objects[render_world.num_shaded++]={o,s};
         }
         else if(token=="background_shader")
         {

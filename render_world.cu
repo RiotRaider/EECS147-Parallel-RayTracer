@@ -42,15 +42,15 @@ std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray)
     Hit h;
     std::pair<Shaded_Object, Hit> obj = {o, h};
     Hit hit_test;
-    for (auto a : this->objects)
+    for (int i = 0; i<num_shaded;i++)
     {
-        hit_test = a.object->Intersection(ray, -1);
+        hit_test = objects[i].object->Intersection(ray, -1);
         if (hit_test.dist >= small_t)
         {
             if (hit_test.dist < min_t)
             {
                 min_t = hit_test.dist;
-                obj.first = a;
+                obj.first = objects[i];
                 obj.second = hit_test;
             }
         }

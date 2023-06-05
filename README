@@ -15,6 +15,8 @@ This compiles:
 To run ray tracer:
     ./ray_tracer -i tests-flat/00.txt
 
+    ./ray_tracer -i tests-phong/08.txt -s tests-phong/08.png 
+
 Debugging:
     cuda-memcheck --leak-check full ./ray_tracer -i tests-flat/00.txt
     

@@ -8,6 +8,8 @@
 #include "managed.cuh"
 // #include "acceleration.h"
 
+#define ARRAY_SIZE 32
+
 class Light;
 class Shader;
 class Ray;
@@ -32,20 +34,27 @@ public:
     const Shader* background_shader = nullptr;
 
     // Use these to get access to objects and lights in the scene.
-    std::vector<Shaded_Object> objects;
-    std::vector<const Light*> lights;
+    Shaded_Object objects[ARRAY_SIZE];
+    const Light* lights[ARRAY_SIZE];
 
     // Store pointers to these for deallocation.  You should not use these
     // directly.  Use the objects array above instead.
-    std::vector<Object*> all_objects;
-    std::vector<Shader*> all_shaders;
-    std::vector<Color*> all_colors;
+    Object* all_objects[ARRAY_SIZE];
+    Shader* all_shaders[ARRAY_SIZE];
+    Color* all_colors[ARRAY_SIZE];
     
     const Color* ambient_color = nullptr;
     double ambient_intensity = 0;
 
     bool enable_shadows = true;
     int recursion_depth_limit = 3;
+
+    //counters for arrays
+    int num_shaded = 0; //Shaded Objects
+    int num_lights = 0; //Lights
+    int num_objects = 0; //all objects
+    int num_shaders = 0; //all shaders
+    int num_colors = 0; //all colors
 
 //     Acceleration acceleration;
 

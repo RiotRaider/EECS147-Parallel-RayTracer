@@ -41,9 +41,9 @@ vec3 Phong_Shader::
     vec3 shadeRay;                     // Shade ray for diffuse calculations.
     vec3 reflect;                      // Reflection Ray for specular
     bool lit = false;                  // flag for whether a light source is illuminating the point under inspection
-    for (auto l : render_world.lights) // check all lights in world
+    for (int i = 0; i<render_world.num_lights;i++) // check all lights in world
     {
-        shadeRay = l->position - intersection_point; // vector from intersection point back to light source
+        shadeRay = render_world.lights[i]->position - intersection_point; // vector from intersection point back to light source
 
         if (render_world.enable_shadows) //Only need to check for light blocking if shadows are enabled
         {
@@ -68,14 +68,14 @@ vec3 Phong_Shader::
             {
                 intensity = 0;
             }
-            diffuse = (l->Emitted_Light(shadeRay) * intensity) * color_diffuse->Get_Color(hit.uv);
+            diffuse = (render_world.lights[i]->Emitted_Light(shadeRay) * intensity) * color_diffuse->Get_Color(hit.uv);
             reflect = (2 * dot(normal, shadeRay.normalized()) * normal - (shadeRay.normalized()));
             phi = dot(-ray.direction, reflect);
             if (phi < 0)
             {
                 phi = 0;
             }
-            specular = (l->Emitted_Light(shadeRay) * pow(phi, specular_power)) * color_specular->Get_Color(hit.uv);
+            specular = (render_world.lights[i]->Emitted_Light(shadeRay) * pow(phi, specular_power)) * color_specular->Get_Color(hit.uv);
             lit = false;
             color += diffuse + specular;
         }
