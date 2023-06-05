@@ -1,7 +1,7 @@
-#include "flat_shader.h"
+#include "flat_shader.cuh"
 //#include "mesh.h"
 #include "parse.h"
-#include "phong_shader.h"
+#include "phong_shader.cuh"
 #include "plane.h"
 #include "point_light.h"
 //#include "reflective_shader.h"
@@ -22,6 +22,6 @@ void Setup_Parsing(Parse& parse)
     //parse.template Register_Shader<Reflective_Shader>();
     //parse.template Register_Shader<Transparent_Shader>();
 
-    parse.template Register_Color<Fixed_Color>();
+    parse.template Register_Color<Color>();
     //parse.template Register_Color<Texture>();
 }

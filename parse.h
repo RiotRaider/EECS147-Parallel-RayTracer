@@ -4,8 +4,8 @@
 #include <map>
 #include "object.h"
 #include "light.h"
-#include "shader.h"
-#include "color.h"
+#include "shader.cuh"
+#include "color.cuh"
 
 class Render_World;
 

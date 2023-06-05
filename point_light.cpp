@@ -1,6 +1,6 @@
 #include "point_light.h"
 #include "parse.h"
-#include "color.h"
+#include "color.cuh"
 
 Point_Light::Point_Light(const Parse* parse,std::istream& in)
 {

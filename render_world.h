@@ -18,7 +18,7 @@ struct Shaded_Object
     const Shader* shader = nullptr;
 };
 
-class Render_World
+class Render_World : public Managed
 {
 public:
     Camera camera;

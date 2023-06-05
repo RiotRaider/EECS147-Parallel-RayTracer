@@ -3,6 +3,7 @@
 #include "kernel.cuh"
 
 /*======================TEMPORARY==========================*/
+
 __global__ 
 void Kernel_by_pointer(Hit *elem, Hit *elem2) {
   printf("On device by pointer (before changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem->uv[0], elem->uv[1], elem->dist, elem->triangle);

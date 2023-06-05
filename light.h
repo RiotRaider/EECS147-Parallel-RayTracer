@@ -11,7 +11,7 @@
 class Ray;
 class Parse;
 
-class Light
+class Light : public Managed
 {
 public:
     std::string name;
