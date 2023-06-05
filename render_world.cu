@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #include "render_world.h"
-#include "flat_shader.h"
+#include "flat_shader.cuh"
 #include "object.cuh"
 #include "light.cuh"
 #include "ray.cuh"
