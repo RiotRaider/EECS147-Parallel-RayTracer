@@ -6,8 +6,8 @@
 #include "light.cuh"
 #include "object.cuh"
 #include "light.h"
-#include "shader.h"
-#include "color.h"
+#include "shader.cuh"
+#include "color.cuh"
 
 class Render_World;
 

@@ -1,6 +1,6 @@
 #include "point_light.cuh"
 #include "parse.h"
-#include "color.h"
+#include "color.cuh"
 
 Point_Light::Point_Light(const Point_Light& l)
 {
