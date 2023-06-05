@@ -1,5 +1,5 @@
 #include "parse.h"
-#include "render_world.h"
+#include "render_world.cuh"
 #include <map>
 #include <sstream>
 #include <iostream>

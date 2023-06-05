@@ -3,7 +3,7 @@
 #include "object.cuh"
 #include "phong_shader.cuh"
 #include "ray.cuh"
-#include "render_world.h"
+#include "render_world.cuh"
 
 Phong_Shader::Phong_Shader(const Parse *parse, std::istream &in)
 {

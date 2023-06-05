@@ -4,7 +4,7 @@
 
 /*======================TEMPORARY==========================*/
 
-__global__ 
+/* __global__ 
 void Kernel_by_pointer(Camera *elem) {
   int x=elem->number_pixels[0];
   int y=elem->number_pixels[1];
@@ -100,5 +100,18 @@ void launch_by_value(Camera elem) {
   c1 = From_Pixel(elem.colors[320*elem.number_pixels[0]+280]);
   printf("Pixel of interest(after):(%i,%i) : (%f, %f, %f)\n\n",280,320,c1[0],c1[1],c1[2]);
 }
-
+ */
 /*======================TEMPORARY==========================*/
+
+__global__ 
+void Kernel_Render_Pixel(Render_World& r){
+    if(threadIdx.x == 0 &&threadIdx.y == 0){
+        printf("Kernel Launch... Block (%i,%i)\n",blockIdx.x,blockIdx.y);
+    }
+    __syncthreads();
+    if((threadIdx.x+blockDim.x*blockIdx.x) < r.camera.number_pixels[0] && (threadIdx.y+blockDim.y*blockIdx.y) < r.camera.number_pixels[1])
+    {
+        r.Render_Pixel(ivec2((threadIdx.x+blockDim.x*blockIdx.x),(threadIdx.y+blockDim.y*blockIdx.y)));
+    }
+    __syncthreads();
+}

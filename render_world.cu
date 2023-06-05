@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "render_world.h"
+#include "render_world.cuh"
 #include "flat_shader.cuh"
 #include "object.cuh"
 #include "light.cuh"
@@ -68,6 +68,8 @@ void Render_World::Render_Pixel(const ivec2 &pixel_index)
     camera.Set_Pixel(pixel_index, Pixel_Color(color));
 }
 
+
+
 void Render_World::Render()
 {
     Timer timer;
@@ -81,7 +83,7 @@ void Render_World::Render()
         //temporary - test launch kernel with vec class
 
         /*================================*/
-        Camera * c = new Camera();
+        /* Camera * c = new Camera();
         c->Set_Resolution(ivec2(480,640));
 
         printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);    
@@ -98,11 +100,13 @@ void Render_World::Render()
 
         printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);
         vec3 c1 = From_Pixel(c->colors[320*c->number_pixels[0]+280]);
-        printf("Pixel of interest(final):(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]);
+        printf("Pixel of interest(final):(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]); */
 
         
         /*================================*/
-
+        dim3 grid(ceil(camera.number_pixels[1]/(float)16),ceil(camera.number_pixels[0]/(float)16),1);
+        dim3 block(16,16,1);
+        Kernel_Render_Pixel<<<grid,block>>>(*this);
         stopTime(&timer); 
         printf("\n...%f s\n", elapsedTime(timer));
     }

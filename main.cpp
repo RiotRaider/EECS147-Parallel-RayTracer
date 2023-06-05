@@ -1,7 +1,7 @@
 #include "dump_png.h"
 #include "object.cuh"
 #include "parse.h"
-#include "render_world.h"
+#include "render_world.cuh"
 #include <cstdio>
 #include <fstream>
 #include <iostream>
