@@ -52,10 +52,15 @@ public:
     Render_World() = default;
     ~Render_World();
 
+    __host__ __device__
     void Render_Pixel(const ivec2& pixel_index);
+    
     void Render();
 
+    __host__ __device__
     vec3 Cast_Ray(const Ray& ray,int recursion_depth) const;
+
+    __host__ __device__
     std::pair<Shaded_Object,Hit> Closest_Intersection(const Ray& ray) const;
 };
 #endif
