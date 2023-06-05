@@ -168,7 +168,7 @@ int main(int argc, char** argv)
         Dump_png(data_sol,width,height,"diff.png");
         delete [] data_sol;
     }
-
+    //cudaDeviceReset();
     return 0;
 }
 

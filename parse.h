@@ -2,6 +2,8 @@
 #define __PARSE_H__
 
 #include <map>
+#include "object.h"
+#include "light.cuh"
 #include "object.cuh"
 #include "light.h"
 #include "shader.h"

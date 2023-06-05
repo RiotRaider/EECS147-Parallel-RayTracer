@@ -7,7 +7,7 @@
 #include "render_world.h"
 #include "flat_shader.h"
 #include "object.cuh"
-#include "light.h"
+#include "light.cuh"
 #include "ray.cuh"
 
 #include "support.h"
@@ -74,132 +74,33 @@ void Render_World::Render()
 
     if (gpu_on) {
         //compute on gpu
-        printf("Render image on gpu..."); fflush(stdout);
+        printf("Render image on gpu...\n"); fflush(stdout);
         startTime(&timer);
 
         //launch kernel
         //temporary - test launch kernel with vec class
 
         /*================================*/
+        Camera * c = new Camera();
+        c->Set_Resolution(ivec2(480,640));
 
-        //Hit
-        
-        Hit *e = new Hit;
-        Hit *f = new Hit;
-        
-        for (int i = 0; i < 2; i++) {
-            e->uv[i] = 10;
-        }
-
-        e->dist = 100;
-        e->triangle = 5;
-
-        for (int i = 0; i < 2; i++) {
-            f->uv[i] = 20;
-        }
-
-        f->dist = 200;
-        f->triangle = 10;
-
-        printf("\nHit:\nOn host (print) e: uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
-        printf("On host (print) f: uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", f->uv[0], f->uv[1], f->dist, f->triangle);
-
-        //add
-        e->uv += f->uv;
-        printf("On host (after e + f): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
-        
-        launch_by_pointer_hit(e, f);
-        printf("On host (after by-pointer): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
-
-        launch_by_ref_hit(*e, *f);
-        printf("On host (after by-ref): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
-
-        launch_by_value_hit(*e, *f);
-        printf("On host (after by-value): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
-        
-
-        //Ray
-        Ray *q = new Ray;
-            
-        q->endpoint = {10, 20, 30};
-        q->direction = {0.10, 0.20, 0.30};
-        
-        vec3 q_ray_point = q->Point(5);
-
-        printf("\nRay:\nOn host (print) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
-            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
+        printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);    
         
         
-        launch_by_pointer_ray(q);
-        printf("On host (after by-pointer) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
-            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
+        launch_by_pointer(c);
+
+
+        launch_by_ref(*c);
+
+
+        launch_by_value(*c);
+
+
+        printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);
+        vec3 c1 = From_Pixel(c->colors[320*c->number_pixels[0]+280]);
+        printf("Pixel of interest(final):(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]);
+
         
-        launch_by_ref_ray(*q);
-        printf("On host (after by-ref) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
-            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
-
-        launch_by_value_ray(*q);
-        printf("On host (after by-val) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
-            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
-        
-
-        //Plane - Object
-        Plane *p = new Plane;
-        Sphere *s = new Sphere;
-        Ray *r = new Ray;
-
-        //Plane
-        p->x = {5, 10, 5};
-        p->normal = {1, 2, 3};
-
-        p->normal.normalized();
-        
-        r->endpoint = {1, 2, 3};
-        r->direction = {1, 2, 3};
-
-        Hit hp = p->Intersection(*r, 0);
-        vec3 p_normal = p->Normal(*r, hp);
-
-        //Sphere
-        s->center = {5, 10, 5};
-        s->radius = 2.0;
-
-        Hit hs = s->Intersection(*r, 0);
-        vec3 s_normal = s->Normal(*r, hs);
-
-        printf("\nPlane:\nOn host (print) p: x=(%.2f, %.2f, %.2f), normal=(%.2f, %.2f, %.2f), hp=(dist=%.2f), p_normal=(%.2f, %.2f, %.2f)\n", 
-            p->x[0], p->x[1], p->x[2], p->normal[0], p->normal[1], p->normal[2], hp.dist, p_normal[0], p_normal[1], p_normal[2]);
-        
-        launch_by_pointer_object(p);
-        printf("On host (after by-pointer) p: x=(%.2f, %.2f, %.2f), normal=(%.2f, %.2f, %.2f), hp=(dist=%.2f), p_normal=(%.2f, %.2f, %.2f)\n", 
-            p->x[0], p->x[1], p->x[2], p->normal[0], p->normal[1], p->normal[2], hp.dist, p_normal[0], p_normal[1], p_normal[2]);
-        
-        printf("\nSphere\nOn host (print) s: center=(%.2f, %.2f, %.2f), radius=%.2f, hs=(dist=%.2f), s_normal=(%.2f, %.2f, %.2f)\n", 
-            s->center[0], s->center[1], s->center[2], s->radius, hs.dist, s_normal[0], s_normal[1], s_normal[2]);
-        
-
-        /*
-        launch_by_pointer_ray(q);
-        printf("On host (after by-pointer) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
-            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
-        
-        launch_by_ref_ray(*q);
-        printf("On host (after by-ref) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
-            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
-
-        launch_by_value_ray(*q);
-        printf("On host (after by-val) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
-            q->endpoint[0], q->endpoint[1], q->endpoint[2], q->direction[0], q->direction[1], q->direction[2], q_ray_point[0], q_ray_point[1], q_ray_point[2]);
-
-        */
-
-        //delete these pointers
-        delete e;
-        delete f;
-        delete q;
-
-        cudaDeviceReset();
-
         /*================================*/
 
         stopTime(&timer); 

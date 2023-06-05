@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <utility>
-#include "camera.h"
+#include "camera.cuh"
 #include "object.cuh"
 #include "managed.cuh"
 // #include "acceleration.h"
