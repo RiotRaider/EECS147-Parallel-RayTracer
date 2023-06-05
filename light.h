@@ -1,17 +1,18 @@
 #ifndef __LIGHT_H__
 #define __LIGHT_H__
 
-#include "vec.h"
+#include "vec.cuh"
 #include "misc.h"
 #include <iostream>
 #include <limits>
 #include <math.h>
 #include <vector>
+#include "managed.cuh"
 
 class Ray;
 class Parse;
 
-class Light
+class Light: public Managed
 {
 public:
     std::string name;

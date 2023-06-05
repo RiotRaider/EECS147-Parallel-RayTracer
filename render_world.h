@@ -4,7 +4,8 @@
 #include <vector>
 #include <utility>
 #include "camera.h"
-#include "object.h"
+#include "object.cuh"
+#include "managed.cuh"
 // #include "acceleration.h"
 
 class Light;
@@ -18,10 +19,12 @@ struct Shaded_Object
     const Shader* shader = nullptr;
 };
 
-class Render_World
+class Render_World: public Managed
 {
 public:
     Camera camera;
+
+    bool gpu_on = false;
 
     // This is the background shader that you should use in case no other
     // objects are intersected.  If this pointer is null, then use black as the

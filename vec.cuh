@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <cassert>
+#include "managed.cuh"
 
 static const double pi = 4 * atan(1.0);
 
@@ -15,6 +16,7 @@ struct vec
 {
     T x[n];
 
+    //initialize vec
     vec()
     {make_zero();}
 
@@ -31,12 +33,14 @@ struct vec
     explicit vec(const vec<U,n>& v)
     {for(int i = 0; i < n; i++) x[i] = (T)v.x[i];}
 
+    //functions
     void make_zero()
     {fill(0);}
 
     void fill(T value)
     {for(int i = 0; i < n; i++) x[i] = value;}
 
+    __host__ __device__
     vec& operator += (const vec& v)
     {for(int i = 0; i < n; i++) x[i] += v.x[i]; return *this;}
 

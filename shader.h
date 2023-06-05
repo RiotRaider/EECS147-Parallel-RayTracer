@@ -1,13 +1,15 @@
 #ifndef __SHADER_H__
 #define __SHADER_H__
 
-#include "vec.h"
+#include "vec.cuh"
+#include "managed.cuh"
+
 class Render_World;
 class Ray;
 class Parse;
 struct Hit;
 
-class Shader
+class Shader: public Managed
 {
 public:
     std::string name;

@@ -5,12 +5,12 @@
 #include <vector>
 #include <iostream>
 #include <limits>
-#include "vec.h"
+#include "vec.cuh"
 #include "light.h"
 
 class Color;
 
-class Point_Light : public Light
+class Point_Light : public Light, public Managed
 {
 public:
     const Color* color = nullptr; // RGB color components
