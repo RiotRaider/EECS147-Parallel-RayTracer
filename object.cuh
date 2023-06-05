@@ -2,8 +2,9 @@
 #define __OBJECT_H__
 
 #include "box.h"
-#include "hit.h"
+#include "hit.cuh"
 #include "vec.cuh"
+#include "managed.cuh"
 #include "misc.h"
 #include <iosfwd>
 #include <vector>
@@ -15,7 +16,7 @@ static const double small_t = 1e-4;
 
 class Ray;
 
-class Object : public Managed
+class Object: public Managed
 {
 public:
     // Useful for debugging
@@ -24,7 +25,7 @@ public:
     int num_parts=1;
 
     Object() = default;
-    virtual ~Object() = default;
+    //virtual ~Object() = default;
 
     // Check for an intersection in the range [small_t,inf).  If there are
     // multiple intersections, return the closest one.  If there are no

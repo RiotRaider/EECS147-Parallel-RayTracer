@@ -5,18 +5,22 @@
 #include <stdlib.h>
 
 #include "render_world.h"
-#include "flat_shader.cuh"
-#include "object.h"
-#include "light.h"
-#include "ray.h"
+#include "flat_shader.h"
+#include "object.cuh"
+#include "light.cuh"
+#include "ray.cuh"
 
 #include "support.h"
 #include "kernel.cuh"
+
+#include "plane.cuh"
+#include "sphere.cuh"
 
 extern bool enable_acceleration;
 
 Render_World::~Render_World()
 {
+    /*
     for (auto a : all_objects)
         delete a;
     for (auto a : all_shaders)
@@ -25,6 +29,8 @@ Render_World::~Render_World()
         delete a;
     for (auto a : lights)
         delete a;
+    
+        */
 }
 
 // Find and return the Hit structure for the closest intersection.  Be careful
@@ -68,55 +74,37 @@ void Render_World::Render()
 
     if (gpu_on) {
         //compute on gpu
-        printf("Render image on gpu..."); fflush(stdout);
+        printf("Render image on gpu...\n"); fflush(stdout);
         startTime(&timer);
 
         //launch kernel
         //temporary - test launch kernel with vec class
 
         /*================================*/
-        Hit *e = new Hit;
-        Hit *f = new Hit;
+        Camera * c = new Camera();
+        c->Set_Resolution(ivec2(480,640));
+
+        printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);    
         
-        for (int i = 0; i < 2; i++) {
-            e->uv[i] = 10;
-        }
-
-        e->dist = 100;
-        e->triangle = 5;
-
-        for (int i = 0; i < 2; i++) {
-            f->uv[i] = 20;
-        }
-
-        f->dist = 200;
-        f->triangle = 10;
-
-        printf("On host (print) e: uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
-        printf("On host (print) f: uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", f->uv[0], f->uv[1], f->dist, f->triangle);
-
-        //add
-        e->uv += f->uv;
-        printf("On host (after e + f): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
         
-        launch_by_pointer(e, f);
+        launch_by_pointer(c);
 
-        printf("On host (after by-pointer): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
 
-        launch_by_ref(*e, *f);
+        launch_by_ref(*c);
 
-        printf("On host (after by-ref): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
 
-        launch_by_value(*e, *f);
+        launch_by_value(*c);
 
-        printf("On host (after by-value): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", e->uv[0], e->uv[1], e->dist, e->triangle);
 
-        cudaDeviceReset();
+        printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);
+        vec3 c1 = From_Pixel(c->colors[320*c->number_pixels[0]+280]);
+        printf("Pixel of interest(final):(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]);
 
+        
         /*================================*/
 
         stopTime(&timer); 
-        printf("%f s\n", elapsedTime(timer));
+        printf("\n...%f s\n", elapsedTime(timer));
     }
     else {
         //compute on cpu

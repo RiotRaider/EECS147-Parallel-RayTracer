@@ -3,6 +3,8 @@
 
 #include <map>
 #include "object.h"
+#include "light.cuh"
+#include "object.cuh"
 #include "light.h"
 #include "shader.cuh"
 #include "color.cuh"

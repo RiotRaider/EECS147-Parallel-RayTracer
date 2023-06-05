@@ -3,8 +3,9 @@
 
 #include <vector>
 #include <utility>
-#include "camera.h"
-#include "object.h"
+#include "camera.cuh"
+#include "object.cuh"
+#include "managed.cuh"
 // #include "acceleration.h"
 
 class Light;
@@ -18,7 +19,7 @@ struct Shaded_Object
     const Shader* shader = nullptr;
 };
 
-class Render_World : public Managed
+class Render_World: public Managed
 {
 public:
     Camera camera;

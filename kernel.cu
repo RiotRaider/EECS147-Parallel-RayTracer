@@ -5,72 +5,100 @@
 /*======================TEMPORARY==========================*/
 
 __global__ 
-void Kernel_by_pointer(Hit *elem, Hit *elem2) {
-  printf("On device by pointer (before changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem->uv[0], elem->uv[1], elem->dist, elem->triangle);
+void Kernel_by_pointer(Camera *elem) {
+  int x=elem->number_pixels[0];
+  int y=elem->number_pixels[1];
+  __shared__ vec3 color;
+  ivec2 ind;
+  ind[0]=280;
+  ind[1]=320;
+  color[threadIdx.x] = 1;
+  if(threadIdx.x==0){
+    elem->Set_Pixel(ind,Pixel_Color(color));
+    printf("On device by pointer \n");
+  }
+  __syncthreads();
   
-  elem->dist+=10;
-  elem->triangle+=50;
-
-  vec2 uv2 = {25, 25};
-  elem->uv += elem2->uv;
-  elem->uv += uv2;
-
-  printf("On device by pointer (after changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem->uv[0], elem->uv[1], elem->dist, elem->triangle);
 }
 
 __global__ 
-void Kernel_by_ref(Hit &elem, Hit &elem2) {
-  printf("On device by ref (before changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem.uv[0], elem.uv[1], elem.dist, elem.triangle);
-
-  elem.dist+=20;
-  elem.triangle+=100;
-
-  vec2 uv2 = {75, 75};
-  elem.uv += elem2.uv;
-  elem.uv += uv2;
-
-  printf("On device by ref (after changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem.uv[0], elem.uv[1], elem.dist, elem.triangle);
+void Kernel_by_ref(Camera &elem) {
+  
+  int x=elem.number_pixels[0];
+  int y=elem.number_pixels[1];
+  __shared__ vec3 color;
+  ivec2 ind;
+  ind[0]=280;
+  ind[1]=320;
+  color[threadIdx.x] = 1;
+  if(threadIdx.x==0){
+    elem.Set_Pixel(ind,Pixel_Color(color));
+    printf("On device by reference \n");
+  }
+  __syncthreads();
 }
 
 __global__ 
-void Kernel_by_value(Hit elem, Hit elem2) {
-  printf("On device by value (before changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem.uv[0], elem.uv[1], elem.dist, elem.triangle);
-
-  elem.dist+=30;
-  elem.triangle+=150;
-
-  vec2 uv2 = {125, 125};
-  elem.uv += elem2.uv;
-  elem.uv += uv2;
-
-  printf("On device by value (after changes): uv=(%.2f, %.2f), dist=%.2f, triangle=%d\n", elem.uv[0], elem.uv[1], elem.dist, elem.triangle);
+void Kernel_by_value(Camera elem) {
+  
+  int x=elem.number_pixels[0];
+  int y=elem.number_pixels[1];
+  __shared__ vec3 color;
+  ivec2 ind;
+  ind[0]=280;
+  ind[1]=320;
+  color[threadIdx.x] = 1;
+  if(threadIdx.x==0){
+    elem.Set_Pixel(ind,Pixel_Color(color));
+    printf("On device by value \n");
+  }
+  __syncthreads();
 }
 
-void launch_by_pointer(Hit *elem, Hit *elem2) {
+void launch_by_pointer(Camera *elem) {
   dim3 dim_grid(1, 1, 1);
-  dim3 dim_block(1, 1, 1);
-
-  //printf("launch by pointer: name=(%d, %d, %d), value=%d\n", elem->color[0], elem->color[1], elem->color[2], elem->value);
-  Kernel_by_pointer<<< dim_grid, dim_block >>>(elem, elem2);
+  dim3 dim_block(3, 1, 1);
+  elem->colors[320*elem->number_pixels[0]+280]=0;
+  vec3 c1 = From_Pixel(elem->colors[320*elem->number_pixels[0]+280]);
+  printf("Pixel of interest(before):(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]);
+  
+  printf("On host launch by pointer\n");
+  Kernel_by_pointer<<< dim_grid, dim_block >>>(elem);
   cudaDeviceSynchronize();
+  
+  c1 = From_Pixel(elem->colors[320*elem->number_pixels[0]+280]);
+  printf("Pixel of interest(after):(%i,%i) : (%f, %f, %f)\n\n",280,320,c1[0],c1[1],c1[2]);
 }
 
-void launch_by_ref(Hit &elem, Hit &elem2) {
+void launch_by_ref(Camera &elem) {
   dim3 dim_grid(1, 1, 1);
-  dim3 dim_block(1, 1, 1);
+  dim3 dim_block(3, 1, 1);
+  elem.colors[320*elem.number_pixels[0]+280]=0;
+  
+  vec3 c1 = From_Pixel(elem.colors[320*elem.number_pixels[0]+280]);
+  printf("Pixel of interest(before):(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]);
 
-  //printf("launch by ref: name=(%d, %d, %d), value=%d\n", elem.color[0], elem.color[1], elem.color[2], elem.value);
-  Kernel_by_ref<<< dim_grid, dim_block >>>(elem, elem2);
+  printf("On host launch by reference\n");
+  Kernel_by_ref<<< dim_grid, dim_block >>>(elem);
   cudaDeviceSynchronize();
+  
+  c1 = From_Pixel(elem.colors[320*elem.number_pixels[0]+280]);
+  printf("Pixel of interest(after):(%i,%i) : (%f, %f, %f)\n\n",280,320,c1[0],c1[1],c1[2]);
 }
 
-void launch_by_value(Hit elem, Hit elem2) {
+void launch_by_value(Camera elem) {
   dim3 dim_grid(1, 1, 1);
-  dim3 dim_block(1, 1, 1);
-
-  //printf("launch by value: name=(%d, %d, %d), value=%d\n", elem.color[0], elem.color[1], elem.color[2], elem.value);
-  Kernel_by_value<<< dim_grid, dim_block >>>(elem, elem2);
+  dim3 dim_block(3, 1, 1);
+  elem.colors[320*elem.number_pixels[0]+280]=0;
+  vec3 c1 = From_Pixel(elem.colors[320*elem.number_pixels[0]+280]);
+  printf("Pixel of interest(before):(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]);
+  
+  printf("On host launch by value\n");
+  Kernel_by_value<<< dim_grid, dim_block >>>(elem);
   cudaDeviceSynchronize();
+
+  c1 = From_Pixel(elem.colors[320*elem.number_pixels[0]+280]);
+  printf("Pixel of interest(after):(%i,%i) : (%f, %f, %f)\n\n",280,320,c1[0],c1[1],c1[2]);
 }
 
 /*======================TEMPORARY==========================*/

@@ -1,11 +1,12 @@
 #include "flat_shader.cuh"
 //#include "mesh.h"
 #include "parse.h"
+<<<<<<< HEAD
 #include "phong_shader.cuh"
 #include "plane.h"
 #include "point_light.h"
 //#include "reflective_shader.h"
-#include "sphere.h"
+#include "sphere.cuh"
 //#include "texture.h"
 //#include "transparent_shader.h"
 

@@ -1,8 +1,8 @@
 //Student Name: Justin Sanders
 //Student ID: 862192429
-#include "plane.h"
-#include "hit.h"
-#include "ray.h"
+#include "plane.cuh"
+#include "hit.cuh"
+#include "ray.cuh"
 #include <cfloat>
 #include <limits>
 
@@ -13,6 +13,7 @@ Plane::Plane(const Parse* parse,std::istream& in)
 }
 
 // Intersect with the plane.  The plane's normal points outside.
+__host__ __device__
 Hit Plane::Intersection(const Ray& ray, int part) const
 {
     Hit hit;
@@ -27,11 +28,13 @@ Hit Plane::Intersection(const Ray& ray, int part) const
     return hit;
 }
 
+__host__ __device__
 vec3 Plane::Normal(const Ray& ray, const Hit& hit) const
 {
     return normal;
 }
 
+__host__ __device__
 std::pair<Box,bool> Plane::Bounding_Box(int part) const
 {
     Box b;

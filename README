@@ -12,5 +12,11 @@ To compile unaccelerated ray tracer:
 This compiles:
     nvc++ -std=c++17 -O3 *.cpp *.cu -o ray_tracer -lpng -lcudart -lcuda
 
-To run unaccelerated ray tracer:
+To run ray tracer:
     ./ray_tracer -i tests-flat/00.txt
+
+Debugging:
+    cuda-memcheck --leak-check full ./ray_tracer -i tests-flat/00.txt
+    
+    cuda-gdb
+    run ./ray_tracer -i tests-flat/00.txt

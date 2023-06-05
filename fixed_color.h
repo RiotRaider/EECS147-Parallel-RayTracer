@@ -3,7 +3,7 @@
 
 #include "color.h"
 
-class Fixed_Color : public Color
+class Fixed_Color : public Color, public Managed
 {
     vec3 color;
 

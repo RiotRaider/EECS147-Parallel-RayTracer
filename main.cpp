@@ -1,5 +1,5 @@
 #include "dump_png.h"
-#include "object.h"
+#include "object.cuh"
 #include "parse.h"
 #include "render_world.h"
 #include <cstdio>
@@ -168,7 +168,7 @@ int main(int argc, char** argv)
         Dump_png(data_sol,width,height,"diff.png");
         delete [] data_sol;
     }
-
+    //cudaDeviceReset();
     return 0;
 }
 
