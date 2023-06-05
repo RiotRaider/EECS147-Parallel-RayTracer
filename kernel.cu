@@ -3,6 +3,8 @@
 #include "kernel.cuh"
 
 /*======================TEMPORARY==========================*/
+
+//Hit
 __global__ 
 void Kernel_by_pointer(Camera *elem) {
   int x=elem->number_pixels[0];

@@ -3,7 +3,7 @@
 
 #include "shader.h"
 
-class Phong_Shader : public Shader
+class Phong_Shader : public Shader, public Managed
 {
 public:
     const Color* color_ambient = nullptr;

@@ -2,6 +2,8 @@
 #define __SHADER_H__
 
 #include "vec.cuh"
+#include "managed.cuh"
+
 class Render_World;
 class Ray;
 class Parse;

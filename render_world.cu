@@ -6,17 +6,21 @@
 
 #include "render_world.h"
 #include "flat_shader.h"
-#include "object.h"
+#include "object.cuh"
 #include "light.cuh"
-#include "ray.h"
+#include "ray.cuh"
 
 #include "support.h"
 #include "kernel.cuh"
+
+#include "plane.cuh"
+#include "sphere.cuh"
 
 extern bool enable_acceleration;
 
 Render_World::~Render_World()
 {
+    /*
     for (auto a : all_objects)
         delete a;
     for (auto a : all_shaders)
@@ -25,6 +29,8 @@ Render_World::~Render_World()
         delete a;
     for (auto a : lights)
         delete a;
+    
+        */
 }
 
 // Find and return the Hit structure for the closest intersection.  Be careful
@@ -98,7 +104,7 @@ void Render_World::Render()
         /*================================*/
 
         stopTime(&timer); 
-        printf("%f s\n", elapsedTime(timer));
+        printf("\n...%f s\n", elapsedTime(timer));
     }
     else {
         //compute on cpu
