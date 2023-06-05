@@ -9,5 +9,14 @@ Developed and run on UCR Bender Apptainer:
 To compile unaccelerated ray tracer:
     g++ -std=c++17 -g -Wall -O3 *.cpp -o ray_tracer -lpng
 
-To run unaccelerated ray tracer:
+This compiles:
+    nvc++ -std=c++17 -O3 *.cpp *.cu -o ray_tracer -lpng -lcudart -lcuda
+
+To run ray tracer:
     ./ray_tracer -i tests-flat/00.txt
+
+Debugging:
+    cuda-memcheck --leak-check full ./ray_tracer -i tests-flat/00.txt
+    
+    cuda-gdb
+    run ./ray_tracer -i tests-flat/00.txt

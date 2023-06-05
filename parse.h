@@ -2,10 +2,11 @@
 #define __PARSE_H__
 
 #include <map>
-#include "object.h"
-#include "light.h"
-#include "shader.h"
-#include "color.h"
+
+#include "light.cuh"
+#include "object.cuh"
+#include "shader.cuh"
+#include "color.cuh"
 
 class Render_World;
 

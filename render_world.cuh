@@ -3,9 +3,10 @@
 
 #include <vector>
 #include <utility>
-#include "camera.h"
-#include "object.h"
-
+#include "camera.cuh"
+#include "object.cuh"
+#include "managed.cuh"
+// #include "acceleration.h"
 
 class Light;
 class Shader;
@@ -18,10 +19,12 @@ struct Shaded_Object
     const Shader* shader = nullptr;
 };
 
-class Render_World
+class Render_World: public Managed
 {
 public:
     Camera camera;
+
+    bool gpu_on = false;
 
     // This is the background shader that you should use in case no other
     // objects are intersected.  If this pointer is null, then use black as the
@@ -47,12 +50,20 @@ public:
 //     Acceleration acceleration;
 
     Render_World() = default;
+    Render_World(const Render_World& r){
+        ambient_color = r.ambient_color;
+    }
     ~Render_World();
 
+    __host__ __device__
     void Render_Pixel(const ivec2& pixel_index);
+    
     void Render();
 
+    __host__ __device__
     vec3 Cast_Ray(const Ray& ray,int recursion_depth) const;
+
+    __host__ __device__
     std::pair<Shaded_Object,Hit> Closest_Intersection(const Ray& ray) const;
 };
 #endif

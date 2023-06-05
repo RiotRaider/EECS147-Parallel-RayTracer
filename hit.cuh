@@ -1,11 +1,12 @@
 #ifndef __HIT_H__
 #define __HIT_H__
 
-#include "vec.h"
+#include "vec.cuh"
+#include "managed.cuh"
 
 // Records information about an intersection, which may be needed later for a
 // subsequent call to Normal.
-struct Hit
+struct Hit: public Managed
 {
     // Distance along the ray at which this occurred; if there was no
     // intersection, set this to a negative value.
@@ -17,6 +18,7 @@ struct Hit
     // Barycentric weights of intersection within triangle (for meshes)
     vec2 uv = {};
 
+    __host__ __device__ 
     bool Valid() const {return dist>=0;}
 };
 

@@ -1,5 +1,5 @@
 #include "parse.h"
-#include "render_world.h"
+#include "render_world.cuh"
 #include <map>
 #include <sstream>
 #include <iostream>
@@ -72,6 +72,9 @@ void Parse::Parse_Input(Render_World& render_world, std::istream& in)
         else if(token=="recursion_depth_limit")
         {
             ss>>render_world.recursion_depth_limit;
+        }
+        else if(token=="gpu") {
+            ss>>render_world.gpu_on;
         }
         else
         {

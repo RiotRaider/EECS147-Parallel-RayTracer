@@ -4,14 +4,14 @@
 #ifndef __MISC_H__
 #define __MISC_H__
 
-#include "vec.h"
+#include "vec.cuh"
 #include <iostream>
 
 // Prints out a TODO message at most once.
 #define TODO {static std::ostream& todo=std::cout<<"TODO: "<<__FUNCTION__<<" in "<<__FILE__<<std::endl;(void)todo;}
 
 typedef unsigned int Pixel;
-
+__host__ __device__
 inline Pixel Pixel_Color(const vec3& color)
 {
     unsigned int r=std::min(color[0],1.0)*255;
