@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 
+//modify parsing so it parses and adds the objects to the correct array in render
 void Parse::Parse_Input(Render_World& render_world, std::istream& in)
 {
     std::string token,s0,s1,line;
@@ -86,6 +87,7 @@ void Parse::Parse_Input(Render_World& render_world, std::istream& in)
     render_world.camera->Set_Resolution(ivec2(width,height));
 }
 
+//add and modify get functions -> see .h file 
 const Shader* Parse::Get_Shader(std::istream& in) const
 {
     std::string token;

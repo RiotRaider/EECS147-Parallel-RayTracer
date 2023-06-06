@@ -16,6 +16,7 @@ static const double small_t = 1e-4;
 
 class Ray;
 
+/*
 class Object: public Managed
 {
 public:
@@ -42,5 +43,6 @@ public:
 
     virtual std::pair<Box,bool> Bounding_Box(int part) const=0;
 };
+*/
 
 #endif

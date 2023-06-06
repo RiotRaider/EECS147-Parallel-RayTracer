@@ -7,6 +7,7 @@ class Ray;
 class Parse;
 struct Hit;
 
+/*
 class Shader: public Managed
 {
 public:
@@ -21,4 +22,6 @@ public:
         const Hit& hit,const vec3& intersection_point,const vec3& normal,
         int recursion_depth) const=0;
 };
+*/
+
 #endif

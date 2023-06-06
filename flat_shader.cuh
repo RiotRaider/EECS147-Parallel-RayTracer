@@ -8,9 +8,11 @@ class Flat_Shader : public Shader
 {
 private:
     void _realloc(){
-
-	if (color != 0) { cudaFree((void*)color); }
-	cudaMallocManaged(&color, sizeof(Color));
+        if (color != 0) { 
+            cudaFree((void*)color); 
+        }
+	
+        cudaMallocManaged(&color, sizeof(Color));
     }
 
 public:
@@ -18,12 +20,13 @@ public:
 
     Flat_Shader(const Parse* parse,std::istream& in);
     Flat_Shader(const Flat_Shader& s);
-    virtual ~Flat_Shader() { cudaFree((void*)color); } ;
+    
+    ~Flat_Shader() { cudaFree((void*)color); } ;
     
     __host__ __device__
-    virtual vec3 Shade_Surface(const Render_World& render_world,const Ray& ray,
+    vec3 Shade_Surface(const Render_World& render_world,const Ray& ray,
         const Hit& hit,const vec3& intersection_point,const vec3& normal,
-        int recursion_depth) const override;
+        int recursion_depth) const;
     
     static constexpr const char* parse_name = "flat_shader";
 };
