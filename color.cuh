@@ -21,7 +21,6 @@ public:
     vec3 Get_Color(const vec2& uv) const {
 	return color;
     }
-    
     static constexpr const char* parse_name = "color";
 
 };

@@ -85,10 +85,6 @@ void Render_World::Render()
         printf("Render image on gpu...\n"); fflush(stdout);
         startTime(&timer);
 
-        // pls iterate through spheres, planes, shaders, lights, colors, flat_shaded_spheres, phong_shaded_spheres, flat_shaded_planes, phong_shaded_planes
-        // check if the object types are loaded correctly and are properly in um
-    
-
         //launch kernel        
         /*================================*/
         dim3 grid(ceil(camera->number_pixels[0]/(float)16),ceil(camera->number_pixels[1]/(float)16),1);
@@ -97,8 +93,6 @@ void Render_World::Render()
             Kernel_Render_Pixel<<<grid,block>>>(this);
             cudaDeviceSynchronize();
             printf("Kernel Success\n");
-            
-        /*================================*/
 
         stopTime(&timer); 
         printf("\n...%f s\n", elapsedTime(timer));

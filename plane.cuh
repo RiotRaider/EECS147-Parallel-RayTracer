@@ -12,18 +12,21 @@ public:
     vec3 normal;
 
     Plane(const Parse* parse,std::istream& in);
-    Plane() :x(0,0,0), normal(0,0,1) {}
+    
+    Plane()
+        :x(0,0,0), normal(0,0,1)
+    {}
 
-    ~Plane();
+    virtual ~Plane() = default;
 
     __host__ __device__
-    Hit Intersection(const Ray& ray, int part) const;
+    virtual Hit Intersection(const Ray& ray, int part) const override;
     
     __host__ __device__
-    vec3 Normal(const Ray& ray, const Hit& hit) const;
+    virtual vec3 Normal(const Ray& ray, const Hit& hit) const override;
     
     __host__ __device__
-    std::pair<Box,bool> Bounding_Box(int part) const;
+    virtual std::pair<Box,bool> Bounding_Box(int part) const override;
 
     static constexpr const char* parse_name = "plane";
 };

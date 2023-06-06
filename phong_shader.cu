@@ -7,7 +7,6 @@
 
 Phong_Shader::Phong_Shader(const Parse *parse, std::istream &in)
 {
-    _realloc();
     in >> name;
     color_ambient = parse->Get_Color(in);
     color_diffuse = parse->Get_Color(in);

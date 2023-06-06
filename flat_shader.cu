@@ -5,8 +5,6 @@
 Flat_Shader::Flat_Shader(const Parse* parse,std::istream& in)
 {
     in>>name;
-
-    _realloc();
     color=parse->Get_Color(in);
 }
 

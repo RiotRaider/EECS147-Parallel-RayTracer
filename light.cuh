@@ -16,15 +16,10 @@ class Light : public Managed
 public:
     std::string name;
     vec3 position;
-    const Color* color = nullptr; // RGB color components
-    double brightness = 0;
+    
+    Light() = default;
+    virtual ~Light() = default;
 
-    Light(const Light& l);
-    Light(const Parse* parse,std::istream& in);
-    ~Light() {cudafree((void*)color)};
-
-    vec3 Emitted_Light(const vec3& vector_to_light) const;
-
-    static constexpr const char* parse_name = "point_light";
+    virtual vec3 Emitted_Light(const vec3& vector_to_light) const=0;
 };
 #endif
