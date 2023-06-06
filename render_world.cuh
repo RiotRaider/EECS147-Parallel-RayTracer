@@ -9,6 +9,9 @@
 #include "light.cuh"
 #include "ray.cuh"
 #include "managed.cuh"
+
+#include <cstring> //to use memcpy
+using namespace std;
 // #include "acceleration.h"
 
 #define ARRAY_SIZE 32
