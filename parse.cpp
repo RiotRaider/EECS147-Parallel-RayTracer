@@ -62,8 +62,8 @@ void Parse::Parse_Input(Render_World& render_world, std::istream& in)
         else if(token=="camera")
         {
             ss>>u>>v>>w>>f0;
-            render_world.camera.Position_And_Aim_Camera(u,v,w);
-            render_world.camera.Focus_Camera(1,(double)width/height,f0*(pi/180));
+            render_world.camera->Position_And_Aim_Camera(u,v,w);
+            render_world.camera->Focus_Camera(1,(double)width/height,f0*(pi/180));
         }
         else if(token=="enable_shadows")
         {
@@ -83,7 +83,7 @@ void Parse::Parse_Input(Render_World& render_world, std::istream& in)
         }
         assert(ss);
     }
-    render_world.camera.Set_Resolution(ivec2(width,height));
+    render_world.camera->Set_Resolution(ivec2(width,height));
 }
 
 const Shader* Parse::Get_Shader(std::istream& in) const

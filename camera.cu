@@ -51,6 +51,7 @@ void Camera::Set_Resolution(const ivec2& number_pixels_input)
 }
 
 // Find the world position of the input pixel
+__host__ __device__
 vec3 Camera::World_Position(const ivec2& pixel_index)
 {
     vec3 result;

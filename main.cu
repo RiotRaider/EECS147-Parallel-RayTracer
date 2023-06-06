@@ -2,10 +2,13 @@
 #include "object.cuh"
 #include "parse.h"
 #include "render_world.cuh"
+#include "kernel.cuh"
+#include "support.h"
 #include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
+#include <cuda_runtime.h>
 
 /*
 
@@ -66,6 +69,7 @@ void Usage(const char* exec)
 }
 
 void Setup_Parsing(Parse& parse);
+void Render(Render_World *r);
 
 int main(int argc, char** argv)
 {
@@ -111,7 +115,7 @@ int main(int argc, char** argv)
     
     // Render the image
     render_world->Render();
-
+    //Render(render_world);
     // For debugging.  Render only the pixel specified on the commandline.
     // Useful for printing out information about a single pixel.
     if(test_x>=0 && test_y>=0)
@@ -124,11 +128,11 @@ int main(int argc, char** argv)
         render_world->Render_Pixel(ivec2(test_x,test_y));
 
         // Mark the pixel we are testing green in the output image.
-        render_world->camera.Set_Pixel(ivec2(test_x,test_y),0x00ff00ff);
+        render_world->camera->Set_Pixel(ivec2(test_x,test_y),0x00ff00ff);
     }
 
     // Save the rendered image to disk
-    Dump_png(render_world->camera.colors,render_world->camera.number_pixels[0],render_world->camera.number_pixels[1],output_file);
+    Dump_png(render_world->camera->colors,render_world->camera->number_pixels[0],render_world->camera->number_pixels[1],output_file);
     
     // If a solution is specified, compare against it.
     if(solution_file)
@@ -138,14 +142,14 @@ int main(int argc, char** argv)
 
         // Read solution from disk
         Read_png(data_sol,width,height,solution_file);
-        assert(render_world->camera.number_pixels[0]==width);
-        assert(render_world->camera.number_pixels[1]==height);
+        assert(render_world->camera->number_pixels[0]==width);
+        assert(render_world->camera->number_pixels[1]==height);
 
         // For each pixel, check to see if it matches solution
         double error = 0, total = 0;
         for(int i=0; i<height*width; i++)
         {
-            vec3 a=From_Pixel(render_world->camera.colors[i]);
+            vec3 a=From_Pixel(render_world->camera->colors[i]);
             vec3 b=From_Pixel(data_sol[i]);
             for(int c=0; c<3; c++)
             {
@@ -171,4 +175,41 @@ int main(int argc, char** argv)
     //cudaDeviceReset();
     return 0;
 }
+
+// void Render(Render_World *r)
+// {
+//     Timer timer;
+//     if (r->gpu_on) {
+//         //compute on gpu
+//         printf("Render image on gpu...\n"); fflush(stdout);
+//         startTime(&timer);
+
+//         //launch kernel        
+//         /*================================*/
+//         dim3 grid(ceil(r->camera->number_pixels[1]/(float)16),ceil(r->camera->number_pixels[0]/(float)16),1);
+//         dim3 block(16,16,1);
+//         printf("Attempt Launch Kernel\n");
+//         Kernel_Render_Pixel<<<grid,block>>>(r);
+//         cudaDeviceSynchronize();
+//         printf("Kernel Success\n");
+
+        
+//         stopTime(&timer); 
+//         printf("\n...%f s\n", elapsedTime(timer));
+//     }
+//     else {
+//         //compute on cpu
+//         printf("Render image on cpu..."); fflush(stdout);
+//         startTime(&timer);
+
+//         for (int j = 0; j < r->camera->number_pixels[1]; j++) {
+//             for (int i = 0; i < r->camera->number_pixels[0]; i++) {
+//                 r->Render_Pixel(ivec2(i, j));
+//             }
+//         }
+
+//         stopTime(&timer); 
+//         printf("%f s\n", elapsedTime(timer));
+//     }
+// }
 

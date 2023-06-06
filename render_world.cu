@@ -5,10 +5,10 @@
 #include <stdlib.h>
 
 #include "render_world.cuh"
-#include "flat_shader.cuh"
-#include "object.cuh"
-#include "light.cuh"
-#include "ray.cuh"
+// #include "flat_shader.cuh"
+// #include "object.cuh"
+// #include "light.cuh"
+// #include "ray.cuh"
 
 #include "support.h"
 #include "kernel.cuh"
@@ -59,13 +59,19 @@ std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray)
 }
 
 // set up the initial view ray and call
+__host__ __device__
 void Render_World::Render_Pixel(const ivec2 &pixel_index)
 {
     // set up the initial view ray here
-    vec3 rayDir = (camera.World_Position(pixel_index) - camera.position).normalized();
-    Ray ray(camera.position, rayDir);
-    vec3 color = Cast_Ray(ray, 1);
-    camera.Set_Pixel(pixel_index, Pixel_Color(color));
+    vec3 rayDir = (camera->World_Position(pixel_index) - camera->position).normalized();
+    Ray ray(camera->position, rayDir);
+    //vec3 color = Cast_Ray(ray, 1);
+    //camera->Set_Pixel(pixel_index, Pixel_Color(color));
+    if(gpu_on){
+        camera->Set_Pixel(pixel_index, Pixel_Color(vec3(255,0,255)));
+    }else{
+        camera->Set_Pixel(pixel_index, Pixel_Color(vec3(0,255,255)));
+    }
 }
 
 
@@ -79,34 +85,15 @@ void Render_World::Render()
         printf("Render image on gpu...\n"); fflush(stdout);
         startTime(&timer);
 
-        //launch kernel
-        //temporary - test launch kernel with vec class
-
+        //launch kernel        
         /*================================*/
-        /* Camera * c = new Camera();
-        c->Set_Resolution(ivec2(480,640));
-
-        printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);    
-        
-        
-        launch_by_pointer(c);
-
-
-        launch_by_ref(*c);
-
-
-        launch_by_value(*c);
-
-
-        printf("On host (print) dimensions = %i x %i\n", c->number_pixels[0],c->number_pixels[1]);
-        vec3 c1 = From_Pixel(c->colors[320*c->number_pixels[0]+280]);
-        printf("Pixel of interest(final):(%i,%i) : (%f, %f, %f)\n",280,320,c1[0],c1[1],c1[2]); */
-
-        
-        /*================================*/
-        dim3 grid(ceil(camera.number_pixels[1]/(float)16),ceil(camera.number_pixels[0]/(float)16),1);
+        dim3 grid(ceil(camera->number_pixels[0]/(float)16),ceil(camera->number_pixels[1]/(float)16),1);
         dim3 block(16,16,1);
-        Kernel_Render_Pixel<<<grid,block>>>(*this);
+        printf("Attempt Launch Kernel\n");
+            Kernel_Render_Pixel<<<grid,block>>>(this);
+            cudaDeviceSynchronize();
+            printf("Kernel Success\n");
+
         stopTime(&timer); 
         printf("\n...%f s\n", elapsedTime(timer));
     }
@@ -115,8 +102,8 @@ void Render_World::Render()
         printf("Render image on cpu..."); fflush(stdout);
         startTime(&timer);
 
-        for (int j = 0; j < camera.number_pixels[1]; j++) {
-            for (int i = 0; i < camera.number_pixels[0]; i++) {
+        for (int j = 0; j < camera->number_pixels[1]; j++) {
+            for (int i = 0; i < camera->number_pixels[0]; i++) {
                 Render_Pixel(ivec2(i, j));
             }
         }
@@ -128,6 +115,7 @@ void Render_World::Render()
 
 // cast ray and return the color of the closest intersected surface point,
 // or the background color if there is no object intersection
+
 vec3 Render_World::Cast_Ray(const Ray &ray, int recursion_depth) const
 {
     vec3 color;

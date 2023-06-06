@@ -5,6 +5,9 @@
 #include <utility>
 #include "camera.cuh"
 #include "object.cuh"
+#include "flat_shader.cuh"
+#include "light.cuh"
+#include "ray.cuh"
 #include "managed.cuh"
 // #include "acceleration.h"
 
@@ -24,7 +27,7 @@ struct Shaded_Object
 class Render_World: public Managed
 {
 public:
-    Camera camera;
+    Camera* camera = new Camera();
 
     bool gpu_on = false;
 
@@ -60,7 +63,7 @@ public:
 
     Render_World() = default;
     Render_World(const Render_World& r)
-        :camera(r.camera), gpu_on(r.gpu_on),ambient_intensity(r.ambient_intensity),num_shaded(r.num_shaded),num_lights(r.num_lights),num_objects(r.num_objects),
+        :gpu_on(r.gpu_on),ambient_intensity(r.ambient_intensity),num_shaded(r.num_shaded),num_lights(r.num_lights),num_objects(r.num_objects),
         num_shaders(r.num_shaders),num_colors(r.num_colors),enable_shadows(r.enable_shadows),recursion_depth_limit(r.recursion_depth_limit)
     {
         ambient_color=r.ambient_color;
@@ -69,8 +72,29 @@ public:
             objects[i] = r.objects[i];
         }
         for(int i = 0; i<num_lights;i++){
-            cudaMallocManaged(&lights[i],sizeof(Light)*1)
+            cudaMallocManaged(&lights[i],sizeof(Light));
+            cudaDeviceSynchronize();
+            memcpy((void*)lights[i],r.lights[i],sizeof(Light));
         }
+        for(int i = 0; i<num_objects;i++){
+            cudaMallocManaged(&all_objects[i],sizeof(Object));
+            cudaDeviceSynchronize();
+            memcpy(all_objects[i],r.all_objects[i],sizeof(Object));
+        }
+        for(int i = 0; i<num_shaders;i++){
+            cudaMallocManaged(&all_shaders[i],sizeof(Shader));
+            cudaDeviceSynchronize();
+            memcpy(all_shaders[i],r.all_shaders[i],sizeof(Shader));
+        }
+        for(int i = 0; i<num_colors;i++){
+            cudaMallocManaged(&all_colors[i],sizeof(Color));
+            cudaDeviceSynchronize();
+            memcpy(all_colors[i],r.all_colors[i],sizeof(Color));
+        }
+
+        cudaMallocManaged(&camera, sizeof(Camera));
+        cudaDeviceSynchronize();
+        memcpy(camera, r.camera, sizeof(Camera));
 
     }
     ~Render_World();
@@ -80,10 +104,9 @@ public:
     
     void Render();
 
-    __host__ __device__
+    
     vec3 Cast_Ray(const Ray& ray,int recursion_depth) const;
 
-    __host__ __device__
     std::pair<Shaded_Object,Hit> Closest_Intersection(const Ray& ray) const;
 };
 #endif

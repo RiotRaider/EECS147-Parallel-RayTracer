@@ -38,6 +38,7 @@ public:
     void Set_Resolution(const ivec2& number_pixels_input);
 
     // Used for determining the where pixels are
+    __host__ __device__
     vec3 World_Position(const ivec2& pixel_index);
     vec2 Cell_Center(const ivec2& index) const
     {

@@ -22,5 +22,5 @@ void launch_by_ref(Camera &elem);
 void launch_by_value(Camera elem);
 
 /*======================TEMPORARY==========================*/
-__global__ void Kernel_Render_Pixel(Render_World& r);
+__global__ void Kernel_Render_Pixel(Render_World* r);
 #endif
