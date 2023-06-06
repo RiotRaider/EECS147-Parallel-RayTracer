@@ -88,7 +88,7 @@ void Parse::Parse_Input(Render_World& render_world, std::istream& in)
 }
 
 //add and modify get functions -> see .h file 
-const Shader* Parse::Get_Shader(std::istream& in) const
+const Flat_Shader* Parse::Get_Flat_Shader(std::istream& in) const
 {
     std::string token;
     in>>token;
@@ -98,7 +98,27 @@ const Shader* Parse::Get_Shader(std::istream& in) const
     return it->second;
 }
 
-const Object* Parse::Get_Object(std::istream& in) const
+const Phong_Shader* Parse::Get_Phong_Shader(std::istream& in) const
+{
+    std::string token;
+    in>>token;
+        
+    auto it=shaders.find(token);
+    assert(it!=shaders.end());
+    return it->second;
+}
+
+const Sphere* Parse::Get_Sphere(std::istream& in) const
+{
+    std::string token;
+    in>>token;
+
+    auto it=objects.find(token);
+    assert(it!=objects.end());
+    return it->second;
+}
+
+const Plane* Parse::Get_Plane(std::istream& in) const
 {
     std::string token;
     in>>token;
