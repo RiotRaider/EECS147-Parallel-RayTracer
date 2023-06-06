@@ -99,8 +99,17 @@ void kernel_by_ref_ray(Ray &ray) {
 
   vec3 ray_point = ray.Point(5);
 
+  Ray r;
+  r.endpoint = {1, 1, 1};
+  r.direction = {2, 2, 2};
+
+  vec3 ray_point2 = ray.Point(5);
+
   printf("On device by ref (after changes) q: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
             ray.endpoint[0], ray.endpoint[1], ray.endpoint[2], ray.direction[0], ray.direction[1], ray.direction[2], ray_point[0], ray_point[1], ray_point[2]);
+
+  printf("On device by ref (after changes) r: endpoint=(%.2f, %.2f, %.2f), direction=(%.2f, %.2f, %.2f), point=(%.2f, %.2f, %.2f)\n", 
+            r.endpoint[0], r.endpoint[1], r.endpoint[2], r.direction[0], r.direction[1], r.direction[2], ray_point2[0], ray_point2[1], ray_point2[2]);      
 }
 
 __global__ 
@@ -145,7 +154,7 @@ void launch_by_value_ray(Ray ray) {
 }
 
 //Plane
-__global__ 
+/*__global__ 
 void kernel_by_pointer_plane(Plane *p) {
   Ray r;
 
@@ -157,9 +166,9 @@ void kernel_by_pointer_plane(Plane *p) {
   Hit h = p->Intersection(r, 0);
   vec3 normal = p->Normal(r, h);
 
-  /*printf("On device by pointer (after changes) obj: h=(dist=%.2f), normal=(%.2f, %.2f, %.2f)\n", 
+  printf("On device by pointer (after changes) obj: h=(dist=%.2f), normal=(%.2f, %.2f, %.2f)\n", 
             h.dist, normal[0], normal[1], normal[2]);
-  */
+  
 }
 
 void launch_by_pointer_plane(Plane *p) {
@@ -170,5 +179,6 @@ void launch_by_pointer_plane(Plane *p) {
   kernel_by_pointer_plane<<< dim_grid, dim_block >>>(p);
   cudaDeviceSynchronize();
 }
+*/
 
 /*======================TEMPORARY==========================*/

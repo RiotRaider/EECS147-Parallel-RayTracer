@@ -144,6 +144,7 @@ void Render_World::Render()
         
 
         //Plane - Object
+        /*
         Plane *p = new Plane;
         Sphere *s = new Sphere;
         Ray *r = new Ray;
@@ -177,6 +178,7 @@ void Render_World::Render()
         
         printf("\nSphere:\nOn host (print) s: center=(%.2f, %.2f, %.2f), radius=%.2f, hs=(dist=%.2f), s_normal=(%.2f, %.2f, %.2f)\n", 
             s->center[0], s->center[1], s->center[2], s->radius, hs.dist, s_normal[0], s_normal[1], s_normal[2]);
+            */
         
 
         /*
