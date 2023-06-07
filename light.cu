@@ -15,6 +15,7 @@ Light::Light(const Parse* parse,std::istream& in)
     in>>brightness;
 }
 
+__host__ __device__
 vec3 Light::Emitted_Light(const vec3& vector_to_light) const
 {
     vec2 empty;

@@ -138,6 +138,8 @@ void Render_World::Render_Pixel(const ivec2 &pixel_index)
     if(gpu_on){
         camera->Set_Pixel(pixel_index, Pixel_Color(vec3(255,0,255)));
     }else{
+	    //vec3 color = Cast_Ray(ray, 1);
+	     //   camera->Set_Pixel(pixel_index, Pixel_Color(color));
         camera->Set_Pixel(pixel_index, Pixel_Color(vec3(0,255,255)));
     }
 }
@@ -202,9 +204,11 @@ vec3 Render_World::Cast_Ray(const Ray &ray, int recursion_depth) const
     // Set color to background color as default
     Hit dummyHit;
     
-    
+    printf("error check");
     std::pair<Flat_Shaded_Sphere, Hit> obj = Closest_Flat_Sphere_Intersection(ray);
+    printf("error check 2");
     std::pair<Phong_Shaded_Sphere, Hit> ps_obj = Closest_Phong_Sphere_Intersection(ray);
+    printf("error checl 3");
     std::pair<Flat_Shaded_Plane, Hit> fp_obj = Closest_Flat_Plane_Intersection(ray);
     std::pair<Phong_Shaded_Plane, Hit> pp_obj = Closest_Phong_Plane_Intersection(ray);
 

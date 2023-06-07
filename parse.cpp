@@ -67,6 +67,7 @@ void Parse::Parse_Input(Render_World& render_world, std::istream& in)
 	    fs.sphere = o;
 	    fs.flat_shader = s;
             render_world.flat_shaded_spheres[render_world.num_flat_shaded_spheres++]=fs;
+	    //printf("Flat Shaded Spheres: %d", render_world.num_flat_shaded_spheres);
 	}
 	else if (token == "phong_shaded_sphere"){
 	    auto o = Get_Sphere(ss);

@@ -27,6 +27,7 @@ Phong_Shader::Phong_Shader(const Phong_Shader& s){
 
 
 /*Shade Surface fo Phong Shaded Spheres*/
+__host__ __device__
 vec3 Phong_Shader::
     Shade_Phong_Sphere_Surface(const Render_World &render_world, const Ray &ray, const Hit &hit,
                   const vec3 &intersection_point, const vec3 &normal, int recursion_depth) const
@@ -87,6 +88,7 @@ vec3 Phong_Shader::
 }
 
 /*Shade Surface for Phong Shaded Planes*/
+__host__ __device__
 vec3 Phong_Shader::
     Shade_Phong_Plane_Surface(const Render_World &render_world, const Ray &ray, const Hit &hit,
                   const vec3 &intersection_point, const vec3 &normal, int recursion_depth) const

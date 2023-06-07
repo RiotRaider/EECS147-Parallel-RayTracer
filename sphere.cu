@@ -13,7 +13,8 @@ __host__ __device__
 Hit Sphere::Intersection(const Ray& ray, int part) const
 {
     Hit hit;
-    vec3 w= (this->center-ray.endpoint);
+    vec3 e = ray.endpoint;
+    vec3 w= (this->center-e);
     double wu=0;
     double t1,t2;
     wu = dot(w,ray.direction);
