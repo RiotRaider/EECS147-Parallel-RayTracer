@@ -10,6 +10,7 @@
 
 class Color;
 
+/*
 class Point_Light : public Light, public Managed
 {
 public:
@@ -24,4 +25,5 @@ public:
 
     static constexpr const char* parse_name = "point_light";
 };
+*/
 #endif
