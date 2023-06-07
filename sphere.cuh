@@ -5,7 +5,7 @@
 
 class Parse;
 
-class Sphere : public Object, public Managed
+class Sphere : public Object
 {
 public:
     vec3 center;
@@ -16,16 +16,16 @@ public:
         :center(0,0,0), radius(0.0)
     {}
 
-    virtual ~Sphere() = default;
+    ~Sphere() = default;
 
     __host__ __device__
-    virtual Hit Intersection(const Ray& ray, int part) const override;
+    Hit Intersection(const Ray& ray, int part) const ;
     
     __host__ __device__
-    virtual vec3 Normal(const Ray& ray, const Hit& hit) const override;
+    vec3 Normal(const Ray& ray, const Hit& hit) const;
     
     __host__ __device__
-    virtual std::pair<Box,bool> Bounding_Box(int part) const override;
+    std::pair<Box,bool> Bounding_Box(int part) const ;
 
     static constexpr const char* parse_name = "sphere";
 };

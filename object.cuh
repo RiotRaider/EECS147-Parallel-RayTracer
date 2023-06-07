@@ -16,7 +16,7 @@ static const double small_t = 1e-4;
 
 class Ray;
 
-/*
+
 class Object: public Managed
 {
 public:
@@ -25,6 +25,7 @@ public:
 
     int num_parts=1;
 
+/*
     Object() = default;
     //virtual ~Object() = default;
 
@@ -42,7 +43,8 @@ public:
     virtual vec3 Normal(const Ray& ray, const Hit& hit) const=0;
 
     virtual std::pair<Box,bool> Bounding_Box(int part) const=0;
+    */
 };
-*/
+
 
 #endif

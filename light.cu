@@ -17,5 +17,6 @@ Light::Light(const Parse* parse,std::istream& in)
 
 vec3 Light::Emitted_Light(const vec3& vector_to_light) const
 {
-    return color->Get_Color({})*brightness/(4*pi*vector_to_light.magnitude_squared());
+    vec2 empty;
+    return color->Get_Color(empty)*brightness/(4*pi*vector_to_light.magnitude_squared());
 }

@@ -5,6 +5,9 @@
 #include <utility>
 #include "camera.cuh"
 #include "object.cuh"
+#include "plane.cuh"
+#include "sphere.cuh"
+#include "phong_shader.cuh"
 #include "flat_shader.cuh"
 #include "light.cuh"
 #include "ray.cuh"
@@ -63,7 +66,7 @@ private:
         cudaDeviceSynchronize();
 
         if (background_shader != 0) {
-            cudaFree((void*)background_shader)
+            cudaFree((void*)background_shader);
         }
         cudaMallocManaged(&background_shader, sizeof(Flat_Shader));
         cudaDeviceSynchronize();
@@ -119,7 +122,7 @@ private:
 
         for (int i = 0; i<num_phong_shaded_planes; i++) {
             cudaMallocManaged(&phong_shaded_planes[i].plane, sizeof(Plane));
-            cudaMallocManaged(&flat_shaded_planes[i].phong_shader, sizeof(Phong_Shader));
+            cudaMallocManaged(&phong_shaded_planes[i].phong_shader, sizeof(Phong_Shader));
             cudaDeviceSynchronize();
         }
 
@@ -133,7 +136,7 @@ public:
     // This is the background shader that you should use in case no other
     // objects are intersected.  If this pointer is null, then use black as the
     // color instead.
-    const Shader* background_shader = nullptr;
+    const Flat_Shader* background_shader = nullptr;
 
     // Use these to get access to objects and lights in the scene.
     Flat_Shaded_Sphere flat_shaded_spheres[ARRAY_SIZE];
@@ -168,10 +171,10 @@ public:
     int num_phong_shaders = 0; //num of phong shaders
     int num_colors = 0; //num all colors
 
-    Render_World();
+    Render_World()=default;
     Render_World(const Render_World& r)
-        :gpu_on(r.gpu_on),ambient_intensity(r.ambient_intensity), num_flat_shaded_sphere(r.num_flat_shaded_sphere),
-        num_phong_shaded_sphere(r.num_phong_shaded_sphere), num_flat_shaded_plane(r.num_flat_shaded_plane), num_phong_shaded_plane(r.num_phong_shaded_plane),
+        :gpu_on(r.gpu_on),ambient_intensity(r.ambient_intensity), num_flat_shaded_spheres(r.num_flat_shaded_spheres),
+        num_phong_shaded_spheres(r.num_phong_shaded_spheres), num_flat_shaded_planes(r.num_flat_shaded_planes), num_phong_shaded_planes(r.num_phong_shaded_planes),
         num_lights(r.num_lights), num_spheres(r.num_spheres), num_planes(r.num_planes), num_flat_shaders(r.num_flat_shaders), 
         num_phong_shaders(r.num_phong_shaders), num_colors(r.num_colors), enable_shadows(r.enable_shadows),recursion_depth_limit(r.recursion_depth_limit)
     {
@@ -183,47 +186,84 @@ public:
         background_shader = r.background_shader;
         memcpy(camera, r.camera, sizeof(Camera));
 
-        for(int i = 0; i<num_shaded; i++){
-            objects[i] = r.objects[i];
+        for(int i = 0; i<num_flat_shaded_spheres; i++){
+            flat_shaded_spheres[i] = r.flat_shaded_spheres[i];
         }
-        
+        for(int i = 0; i<num_phong_shaded_spheres; i++){
+            phong_shaded_spheres[i] = r.phong_shaded_spheres[i];
+        }
+	 for(int i = 0; i<num_flat_shaded_planes; i++){
+            flat_shaded_planes[i] = r.flat_shaded_planes[i];
+        }
+	 for(int i = 0; i<num_phong_shaded_planes; i++){
+            phong_shaded_planes[i] = r.phong_shaded_planes[i];
+        }
+
         for(int i = 0; i < num_lights; i++){
             memcpy((void*)lights[i],r.lights[i],sizeof(Light));
         }
 
-        for(int i = 0; i < num_objects; i++){
-            memcpy(all_objects[i],r.all_objects[i],sizeof(Object));
+        for(int i = 0; i < num_spheres; i++){
+            memcpy(all_spheres[i],r.all_spheres[i],sizeof(Sphere));
         }
 
-        for(int i = 0; i<num_shaders;i++){
-            memcpy(all_shaders[i],r.all_shaders[i],sizeof(Shader));
+        for(int i = 0; i < num_planes; i++){
+            memcpy(all_planes[i],r.all_planes[i],sizeof(Plane));
         }
 
+        for(int i = 0; i<num_flat_shaders;i++){
+            memcpy(all_flat_shaders[i],r.all_flat_shaders[i],sizeof(Flat_Shader));
+        }
+
+        for(int i = 0; i<num_phong_shaders;i++){
+            memcpy(all_phong_shaders[i],r.all_phong_shaders[i],sizeof(Phong_Shader));
+	}
+ 
         for(int i = 0; i<num_colors;i++){
             memcpy(all_colors[i],r.all_colors[i],sizeof(Color));
         }
 
-        /*
+        //
         ambient_color = r.ambient_color;
         background_shader = r.background_shader;
-        for(int i = 0; i<num_shaded; i++){
-            objects[i] = r.objects[i];
+        for(int i = 0; i<num_flat_shaded_spheres; i++){
+            flat_shaded_spheres[i] = r.flat_shaded_spheres[i];
         }
-        
+        for(int i = 0; i<num_phong_shaded_spheres; i++){
+            phong_shaded_spheres[i] = r.phong_shaded_spheres[i];
+        }
+	for(int i = 0; i<num_flat_shaded_planes; i++){
+            flat_shaded_planes[i] = r.flat_shaded_planes[i];
+        }
+	for(int i = 0; i<num_phong_shaded_planes; i++){
+            phong_shaded_planes[i] = r.phong_shaded_planes[i];
+        }
+
         for(int i = 0; i<num_lights;i++){
             cudaMallocManaged(&lights[i],sizeof(Light));
             cudaDeviceSynchronize();
             memcpy((void*)lights[i],r.lights[i],sizeof(Light));
         }
-        for(int i = 0; i<num_objects;i++){
-            cudaMallocManaged(&all_objects[i],sizeof(Object));
+        for(int i = 0; i<num_spheres;i++){
+            cudaMallocManaged(&all_spheres[i],sizeof(Sphere));
             cudaDeviceSynchronize();
-            memcpy(all_objects[i],r.all_objects[i],sizeof(Object));
+            memcpy(all_spheres[i],r.all_spheres[i],sizeof(Sphere));
         }
-        for(int i = 0; i<num_shaders;i++){
-            cudaMallocManaged(&all_shaders[i],sizeof(Shader));
+	for(int i = 0; i<num_planes;i++){
+            cudaMallocManaged(&all_planes[i],sizeof(Sphere));
             cudaDeviceSynchronize();
-            memcpy(all_shaders[i],r.all_shaders[i],sizeof(Shader));
+            memcpy(all_planes[i],r.all_planes[i],sizeof(Plane));
+        }
+
+        for(int i = 0; i<num_flat_shaders;i++){
+            cudaMallocManaged(&all_flat_shaders[i],sizeof(Flat_Shader));
+            cudaDeviceSynchronize();
+            memcpy(all_flat_shaders[i],r.all_flat_shaders[i],sizeof(Flat_Shader));
+        }
+	 for(int i = 0; i<num_phong_shaders;i++){
+            cudaMallocManaged(&all_phong_shaders[i],sizeof(Flat_Shader));
+            cudaDeviceSynchronize();
+            memcpy(all_phong_shaders[i],r.all_phong_shaders[i],sizeof(Phong_Shader));
         }
 
         for(int i = 0; i<num_colors;i++){
@@ -235,7 +275,6 @@ public:
         cudaMallocManaged(&camera, sizeof(Camera));
         cudaDeviceSynchronize();
         memcpy(camera, r.camera, sizeof(Camera));
-        */
     }
 
     ~Render_World();
@@ -249,6 +288,12 @@ public:
     vec3 Cast_Ray(const Ray& ray,int recursion_depth) const;
 
     __host__ __device__
-    std::pair<Shaded_Object,Hit> Closest_Intersection(const Ray& ray) const;
+    std::pair<Flat_Shaded_Sphere,Hit> Closest_Flat_Sphere_Intersection(const Ray& ray) const;
+     __host__ __device__
+    std::pair<Phong_Shaded_Sphere,Hit> Closest_Phong_Sphere_Intersection(const Ray& ray) const;
+     __host__ __device__
+    std::pair<Flat_Shaded_Plane,Hit> Closest_Flat_Plane_Intersection(const Ray& ray) const;
+     __host__ __device__
+    std::pair<Phong_Shaded_Plane,Hit> Closest_Phong_Plane_Intersection(const Ray& ray) const;
 };
 #endif

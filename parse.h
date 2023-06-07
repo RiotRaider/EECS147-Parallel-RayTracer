@@ -5,6 +5,10 @@
 
 #include "light.cuh"
 #include "object.cuh"
+#include "sphere.cuh"
+#include "plane.cuh"
+#include "flat_shader.cuh"
+#include "phong_shader.cuh"
 #include "shader.cuh"
 #include "color.cuh"
 
@@ -39,10 +43,10 @@ public:
 
     // Public access to the stored objects.
     const Color* Get_Color(std::istream& in) const;
-    const Shader* Get_Sphere(std::istream& in) const;
-    const Object* Get_Plane(std::istream& in) const;
-    const Shader* Get_Flat_Shader(std::istream& in) const;
-    const Object* Get_Phong_Shader(std::istream& in) const;
+    const Sphere* Get_Sphere(std::istream& in) const;
+    const Plane* Get_Plane(std::istream& in) const;
+    const Flat_Shader* Get_Flat_Shader(std::istream& in) const;
+    const Phong_Shader* Get_Phong_Shader(std::istream& in) const;
 
     // These are the routines that populate the factories above.  They are
     // called in registration.cpp.  You will need to modify that file as you get
@@ -73,42 +77,42 @@ public:
     //    file registration.cpp (and only that file!) refers to something in
     //    those files (their constructors!).
 
-    Sphere void Register_Sphere()
+    template<class Type> void Register_Sphere()
     {
-        parse_sphere[Type::parse_name]=
+        parse_spheres[Type::parse_name]=
             [](const Parse* parse,std::istream& in) -> Sphere*
-            {return new Object(parse,in);};
+            {return new Sphere(parse,in);};
     }
     
-    void Register_Plane()
+    template<class Type> void Register_Plane()
     {
-        parse_plane[Type::parse_name]=
+        parse_planes[Type::parse_name]=
             [](const Parse* parse,std::istream& in) -> Plane*
             {return new Plane(parse,in);};
     }
 
-    void Register_Flat_Shader()
+     template<class Type> void Register_Flat_Shader()
     {
         parse_flat_shaders[Type::parse_name]=
             [](const Parse* parse,std::istream& in) -> Flat_Shader*
             {return new Flat_Shader(parse,in);};
     }
 
-    void Register_Flat_Shader()
+     template<class Type> void Register_Phong_Shader()
     {
         parse_phong_shaders[Type::parse_name]=
             [](const Parse* parse,std::istream& in) -> Phong_Shader*
             {return new Phong_Shader(parse,in);};
     }
 
-    void Register_Light()
+    template<class Type>  void Register_Light()
     {
         parse_lights[Type::parse_name]=
             [](const Parse* parse,std::istream& in) -> Light*
             {return new Light(parse,in);};
     }
 
-    void Register_Color()
+    template<class Type>  void Register_Color()
     {
         parse_colors[Type::parse_name]=
             [](const Parse* parse,std::istream& in) -> Color*

@@ -5,7 +5,7 @@
 
 class Parse;
 
-class Plane : public Object, public Managed
+class Plane : public Object
 {
 public:
     vec3 x;

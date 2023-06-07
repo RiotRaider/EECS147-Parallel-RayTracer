@@ -2,6 +2,7 @@
 #define __PHONG_SHADER_H__
 
 #include "shader.cuh"
+#include "color.cuh"
 
 class Phong_Shader : public Shader
 {
@@ -44,10 +45,14 @@ public:
 	};
 
     __host__ __device__
-    vec3 Shade_Surface(const Render_World& render_world,const Ray& ray,
+    vec3 Shade_Phong_Sphere_Surface(const Render_World& render_world,const Ray& ray,
         const Hit& hit,const vec3& intersection_point,const vec3& normal,
         int recursion_depth) const;
-
+    __host__ __device__
+    vec3 Shade_Phong_Plane_Surface(const Render_World& render_world,const Ray& ray,
+        const Hit& hit,const vec3& intersection_point,const vec3& normal,
+	int recursion_depth) const;
+ 
     static constexpr const char* parse_name = "phong_shader";
 };
 #endif

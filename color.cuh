@@ -2,6 +2,7 @@
 #define __COLOR_H__
 
 struct Hit;
+class Parse; //compiler error fix???? seen in sphere.cuh
 
 class Color : public Managed
 {

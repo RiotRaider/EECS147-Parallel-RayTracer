@@ -35,28 +35,96 @@ Render_World::~Render_World()
 
 // Find and return the Hit structure for the closest intersection.  Be careful
 // to ensure that hit.dist>=small_t.
-std::pair<Shaded_Object, Hit> Render_World::Closest_Intersection(const Ray &ray) const
+std::pair<Flat_Shaded_Sphere, Hit> Render_World::Closest_Flat_Sphere_Intersection(const Ray &ray) const
 {
     double min_t = std::numeric_limits<double>::max();
-    Shaded_Object o;
+    Flat_Shaded_Sphere o;
     Hit h;
-    std::pair<Shaded_Object, Hit> obj = {o, h};
+    std::pair<Flat_Shaded_Sphere, Hit> obj = {o, h};
     Hit hit_test;
-    for (int i = 0; i<num_shaded;i++)
+    for (int i = 0; i<num_flat_shaded_spheres;i++)
     {
-        hit_test = objects[i].object->Intersection(ray, -1);
+        hit_test = flat_shaded_spheres[i].sphere->Intersection(ray, -1);
         if (hit_test.dist >= small_t)
         {
             if (hit_test.dist < min_t)
             {
                 min_t = hit_test.dist;
-                obj.first = objects[i];
+                obj.first = flat_shaded_spheres[i];
                 obj.second = hit_test;
             }
         }
     }
     return obj;
 }
+std::pair<Phong_Shaded_Sphere, Hit> Render_World::Closest_Phong_Sphere_Intersection(const Ray &ray) const
+{
+    double min_t = std::numeric_limits<double>::max();
+    Phong_Shaded_Sphere o;
+    Hit h;
+    std::pair<Phong_Shaded_Sphere, Hit> obj = {o, h};
+    Hit hit_test;
+    for (int i = 0; i<num_flat_shaded_spheres;i++)
+    {
+        hit_test = phong_shaded_spheres[i].sphere->Intersection(ray, -1);
+        if (hit_test.dist >= small_t)
+        {
+            if (hit_test.dist < min_t)
+            {
+                min_t = hit_test.dist;
+                obj.first = phong_shaded_spheres[i];
+                obj.second = hit_test;
+            }
+        }
+    }
+    return obj;
+}
+std::pair<Flat_Shaded_Plane, Hit> Render_World::Closest_Flat_Plane_Intersection(const Ray &ray) const
+{
+    double min_t = std::numeric_limits<double>::max();
+    Flat_Shaded_Plane o;
+    Hit h;
+    std::pair<Flat_Shaded_Plane, Hit> obj = {o, h};
+    Hit hit_test;
+    for (int i = 0; i<num_flat_shaded_planes;i++)
+    {
+        hit_test = flat_shaded_planes[i].plane->Intersection(ray, -1);
+        if (hit_test.dist >= small_t)
+        {
+            if (hit_test.dist < min_t)
+            {
+                min_t = hit_test.dist;
+                obj.first = flat_shaded_planes[i];
+                obj.second = hit_test;
+            }
+        }
+    }
+    return obj;
+}
+std::pair<Phong_Shaded_Plane, Hit> Render_World::Closest_Phong_Plane_Intersection(const Ray &ray) const
+{
+    double min_t = std::numeric_limits<double>::max();
+    Phong_Shaded_Plane o;
+    Hit h;
+    std::pair<Phong_Shaded_Plane, Hit> obj = {o, h};
+    Hit hit_test;
+    for (int i = 0; i<num_phong_shaded_planes;i++)
+    {
+        hit_test = phong_shaded_planes[i].plane->Intersection(ray, -1);
+        if (hit_test.dist >= small_t)
+        {
+            if (hit_test.dist < min_t)
+            {
+                min_t = hit_test.dist;
+                obj.first = phong_shaded_planes[i];
+                obj.second = hit_test;
+            }
+        }
+    }
+    return obj;
+}
+
+
 
 // set up the initial view ray and call
 __host__ __device__
@@ -124,6 +192,7 @@ void Render_World::Render()
 
 vec3 Render_World::Cast_Ray(const Ray &ray, int recursion_depth) const
 {
+    // determine the color here (change if not at recursion limit)
     vec3 color;
     if (recursion_depth > recursion_depth_limit)
     {
@@ -134,23 +203,69 @@ vec3 Render_World::Cast_Ray(const Ray &ray, int recursion_depth) const
     Hit dummyHit;
     
     
-    // determine the color here (change if not at recursion limit)
-    std::pair<Shaded_Object, Hit> obj = Closest_Intersection(ray);
-    if (obj.first.object != nullptr)
-    {
-        vec3 q = ray.endpoint + (ray.direction * obj.second.dist);
-        vec3 n = (obj.first.object->Normal(ray, obj.second)).normalized();
-        color = obj.first.shader->Shade_Surface(*this, ray, obj.second, q, n, recursion_depth);
-    }else{
-        if (background_shader == nullptr)
-        {
-            color.make_zero();
-        }
-        else
-        {
-            color = background_shader->Shade_Surface(*this, ray, dummyHit, ray.direction, ray.direction, 1);
-        }
-    }
+    std::pair<Flat_Shaded_Sphere, Hit> obj = Closest_Flat_Sphere_Intersection(ray);
+    std::pair<Phong_Shaded_Sphere, Hit> ps_obj = Closest_Phong_Sphere_Intersection(ray);
+    std::pair<Flat_Shaded_Plane, Hit> fp_obj = Closest_Flat_Plane_Intersection(ray);
+    std::pair<Phong_Shaded_Plane, Hit> pp_obj = Closest_Phong_Plane_Intersection(ray);
 
+    double closest_hit = std::min(std::min(fp_obj.second.dist, pp_obj.second.dist), std::min(obj.second.dist, ps_obj.second.dist));
+    if (closest_hit == ps_obj.second.dist) {
+	    if (ps_obj.first.sphere != nullptr){
+		vec3 q = ray.endpoint + (ray.direction * ps_obj.second.dist);
+		vec3 n = (ps_obj.first.sphere->Normal(ray, ps_obj.second)).normalized();
+		color = ps_obj.first.phong_shader->Shade_Phong_Sphere_Surface(*this, ray, ps_obj.second, q, n, recursion_depth);
+	    }else{
+		if (background_shader == nullptr){
+		    color.make_zero();
+		} else {
+		    color = background_shader->Shade_Flat_Sphere_Surface(*this, ray, dummyHit, ray.direction, ray.direction, 1);
+		}
+	    }
+     }
+
+	else if (closest_hit == fp_obj.second.dist) {
+    	    if (fp_obj.first.plane!= nullptr){
+		vec3 q = ray.endpoint + (ray.direction * fp_obj.second.dist);
+		vec3 n = (fp_obj.first.plane->Normal(ray, fp_obj.second)).normalized();
+		color = fp_obj.first.flat_shader->Shade_Flat_Plane_Surface(*this, ray, fp_obj.second, q, n, recursion_depth);
+	    }else{
+		if (background_shader == nullptr){
+		    color.make_zero();
+		} else {
+		    color = background_shader->Shade_Flat_Plane_Surface(*this, ray, dummyHit, ray.direction, ray.direction, 1);
+		}
+	    }
+	}
+	else if (closest_hit == pp_obj.second.dist) {
+		 if (pp_obj.first.plane!= nullptr){
+		vec3 q = ray.endpoint + (ray.direction * pp_obj.second.dist);
+		vec3 n = (pp_obj.first.plane->Normal(ray, pp_obj.second)).normalized();
+		color = pp_obj.first.phong_shader->Shade_Phong_Plane_Surface(*this, ray, pp_obj.second, q, n, recursion_depth);
+	    }else{
+		if (background_shader == nullptr){
+		    color.make_zero();
+		} else {
+		    color = background_shader->Shade_Flat_Plane_Surface(*this, ray, dummyHit, ray.direction, ray.direction, 1);
+		}
+	    }
+	} 
+	else {
+	    if (obj.first.sphere != nullptr){
+		vec3 q = ray.endpoint + (ray.direction * obj.second.dist);
+		vec3 n = (obj.first.sphere->Normal(ray, obj.second)).normalized();
+		color = obj.first.flat_shader->Shade_Flat_Sphere_Surface(*this, ray, obj.second, q, n, recursion_depth);
+	    }else{
+		if (background_shader == nullptr){
+		    color.make_zero();
+		} else {
+		    color = background_shader->Shade_Flat_Sphere_Surface(*this, ray, dummyHit, ray.direction, ray.direction, 1);
+		}
+	    }
+	}
+
+	    
+
+    //TODO able to handle objects other than flat_shaded_spheres;
+   
     return color;
 }

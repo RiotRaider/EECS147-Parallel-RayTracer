@@ -107,7 +107,7 @@ __global__
 void Kernel_Render_Pixel(Render_World* r){
     if(blockIdx.x == 0 &&blockIdx.y == 0 && threadIdx.x == 0 &&threadIdx.y == 0 ){
       printf("The image is %i x %i\n",r->camera->number_pixels[0],r->camera->number_pixels[1]);
-      printf("The number of objects is %i\n",r->num_shaded);
+      printf("The number of objects is %i\n",r->num_flat_shaded_spheres); //TODO: finish polymorph//
     }
     __syncthreads();
     if((threadIdx.x+blockDim.x*blockIdx.x) < r->camera->number_pixels[0] && (threadIdx.y+blockDim.y*blockIdx.y) < r->camera->number_pixels[1])
