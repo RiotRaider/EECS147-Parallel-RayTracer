@@ -13,7 +13,10 @@ This compiles:
     nvc++ -std=c++17 -O3 *.cpp *.cu -o ray_tracer -lpng -lcudart -lcuda
 
 To run ray tracer:
-    ./ray_tracer -i tests-flat/00.txt
+    To run one test:
+        ./ray_tracer -i <input file> (*optional* -s <solution image>) (*optional* -o <output file name>)
+    To run all tests: Will check all test cases on both cpu and gpu and compare to solution image
+        bash tester.sh
 
 Debugging:
     cuda-memcheck --leak-check full ./ray_tracer -i tests-flat/00.txt

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 
+//modify parsing so it parses and adds the objects to the correct array in render
 void Parse::Parse_Input(Render_World& render_world, std::istream& in)
 {
     std::string token,s0,s1,line;
@@ -15,40 +16,87 @@ void Parse::Parse_Input(Render_World& render_world, std::istream& in)
     {
         std::stringstream ss(line);
         ss>>token;
+	//if a comment, do nothign 
         if(token[0]=='#')
         {
         }
-        else if(auto it=parse_objects.find(token); it!=parse_objects.end())
+	/*if an object --> sphere and plane*/
+        else if(auto it=parse_spheres.find(token); it!=parse_spheres.end()) 
         {
             auto o=it->second(this,ss);
-            objects[o->name]=o;
-            render_world.all_objects.push_back(o);
+            spheres[o->name]=o;
+            render_world.all_spheres[render_world.num_spheres++]=o;
         }
-        else if(auto it=parse_shaders.find(token); it!=parse_shaders.end())
+	else if(auto it=parse_planes.find(token); it!=parse_planes.end()) 
+	{
+	    auto o=it->second(this,ss);
+            planes[o->name]=o;
+            render_world.all_planes[render_world.num_planes++]=o;
+
+	}
+	/*if a shader --> flat and phong*/
+        else if(auto it=parse_flat_shaders.find(token); it!=parse_flat_shaders.end())
         {
             auto s=it->second(this,ss);
-            shaders[s->name]=s;
-            render_world.all_shaders.push_back(s);
+            flat_shaders[s->name]=s;
+            render_world.all_flat_shaders[render_world.num_flat_shaders++]=s;
         }
+	else if(auto it=parse_phong_shaders.find(token); it!=parse_phong_shaders.end())
+        {
+            auto s=it->second(this,ss);
+            phong_shaders[s->name]=s;
+            render_world.all_phong_shaders[render_world.num_phong_shaders++]=s;
+	} 
+	/*if a light*/
         else if(auto it=parse_lights.find(token); it!=parse_lights.end())
         {
-            render_world.lights.push_back(it->second(this,ss));
+            render_world.lights[render_world.num_lights++]=it->second(this,ss);
         }
+	/*if a color*/
         else if(auto it=parse_colors.find(token); it!=parse_colors.end())
         {
             auto c=it->second(this,ss);
             colors[c->name]=c;
-            render_world.all_colors.push_back(c);
+            render_world.all_colors[render_world.num_colors++]=c;
         }
-        else if(token=="shaded_object")
-        {
-            auto o=Get_Object(ss);
-            auto s=Get_Shader(ss);
-            render_world.objects.push_back({o,s});
-        }
+	/*if a shaded object*/
+	else if (token == "flat_shaded_sphere"){
+	    auto o=Get_Sphere(ss);
+	    auto s = Get_Flat_Shader(ss);
+	    Flat_Shaded_Sphere fs;
+	    fs.sphere = o;
+	    fs.flat_shader = s;
+            render_world.flat_shaded_spheres[render_world.num_flat_shaded_spheres++]=fs;
+	    //printf("Flat Shaded Spheres: %d", render_world.num_flat_shaded_spheres);
+	}
+	else if (token == "phong_shaded_sphere"){
+	    auto o = Get_Sphere(ss);
+	    auto s = Get_Phong_Shader(ss);
+	    Phong_Shaded_Sphere ps;
+	    ps.sphere = o;
+	    ps.phong_shader = s;
+            render_world.phong_shaded_spheres[render_world.num_phong_shaded_spheres++]=ps;
+	}
+	else if (token == "flat_shaded_plane"){
+	    auto o=Get_Plane(ss);
+	    auto s = Get_Flat_Shader(ss);
+	    Flat_Shaded_Plane fp;
+	    fp.plane = o;
+	    fp.flat_shader = s;
+            render_world.flat_shaded_planes[render_world.num_flat_shaded_planes++]=fp;
+	}
+	else if (token == "phong_shaded_plane"){
+	    auto o=Get_Plane(ss);
+	    auto s = Get_Phong_Shader(ss);
+	    Phong_Shaded_Plane pp;
+	    pp.plane = o;
+	    pp.phong_shader = s;
+            render_world.phong_shaded_planes[render_world.num_phong_shaded_planes++]=pp;
+	}
+	/*if background shader*/
         else if(token=="background_shader")
         {
-            render_world.background_shader=Get_Shader(ss);
+            render_world.background_shader=Get_Flat_Shader(ss);
         }
         else if(token=="ambient_light")
         {
@@ -62,8 +110,8 @@ void Parse::Parse_Input(Render_World& render_world, std::istream& in)
         else if(token=="camera")
         {
             ss>>u>>v>>w>>f0;
-            render_world.camera.Position_And_Aim_Camera(u,v,w);
-            render_world.camera.Focus_Camera(1,(double)width/height,f0*(pi/180));
+            render_world.camera->Position_And_Aim_Camera(u,v,w);
+            render_world.camera->Focus_Camera(1,(double)width/height,f0*(pi/180));
         }
         else if(token=="enable_shadows")
         {
@@ -83,26 +131,46 @@ void Parse::Parse_Input(Render_World& render_world, std::istream& in)
         }
         assert(ss);
     }
-    render_world.camera.Set_Resolution(ivec2(width,height));
+    render_world.camera->Set_Resolution(ivec2(width,height));
 }
 
-const Shader* Parse::Get_Shader(std::istream& in) const
+const Flat_Shader* Parse::Get_Flat_Shader(std::istream& in) const
 {
     std::string token;
     in>>token;
         
-    auto it=shaders.find(token);
-    assert(it!=shaders.end());
+    auto it=flat_shaders.find(token);
+    assert(it!=flat_shaders.end());
     return it->second;
 }
 
-const Object* Parse::Get_Object(std::istream& in) const
+const Phong_Shader* Parse::Get_Phong_Shader(std::istream& in) const
+{
+    std::string token;
+    in>>token;
+        
+    auto it=phong_shaders.find(token);
+    assert(it!=phong_shaders.end());
+    return it->second;
+}
+
+const Sphere* Parse::Get_Sphere(std::istream& in) const
 {
     std::string token;
     in>>token;
 
-    auto it=objects.find(token);
-    assert(it!=objects.end());
+    auto it=spheres.find(token);
+    assert(it!=spheres.end());
+    return it->second;
+}
+
+const Plane* Parse::Get_Plane(std::istream& in) const
+{
+    std::string token;
+    in>>token;
+
+    auto it=planes.find(token);
+    assert(it!=planes.end());
     return it->second;
 }
 

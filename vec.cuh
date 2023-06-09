@@ -34,89 +34,94 @@ struct vec
     {for(int i = 0; i < n; i++) x[i] = (T)v.x[i];}
 
     //functions
+    __host__ __device__
     void make_zero()
     {fill(0);}
-
+    __host__ __device__
     void fill(T value)
     {for(int i = 0; i < n; i++) x[i] = value;}
 
     __host__ __device__
     vec& operator += (const vec& v)
     {for(int i = 0; i < n; i++) x[i] += v.x[i]; return *this;}
-
+    __host__ __device__
     vec& operator -= (const vec& v)
     {for(int i = 0; i < n; i++) x[i] -= v.x[i]; return *this;}
-
+    __host__ __device__
     vec& operator *= (const vec& v)
     {for(int i = 0; i < n; i++) x[i] *= v.x[i]; return *this;}
-
+    __host__ __device__
     vec& operator /= (const vec& v)
     {for(int i = 0; i < n; i++) x[i] /= v.x[i]; return *this;}
-
+    __host__ __device__
     vec& operator += (const T& c)
     {for(int i = 0; i < n; i++) x[i] += c; return *this;}
-
+    __host__ __device__
     vec& operator -= (const T& c)
     {for(int i = 0; i < n; i++) x[i] -= c; return *this;}
-
+    __host__ __device__
     vec& operator *= (const T& c)
     {for(int i = 0; i < n; i++) x[i] *= c; return *this;}
-
+    __host__ __device__
     vec& operator /= (const T& c)
     {for(int i = 0; i < n; i++) x[i] /= c; return *this;}
-
+    __host__ __device__
     vec operator + () const
     {return *this;}
-
+    __host__ __device__
     vec operator - () const
     {vec r; for(int i = 0; i < n; i++) r[i] = -x[i]; return r;}
-
+    __host__ __device__
     vec operator + (const vec& v) const
     {vec r; for(int i = 0; i < n; i++) r[i] = x[i] + v.x[i]; return r;}
-
+    __host__ __device__
     vec operator - (const vec& v) const
     {vec r; for(int i = 0; i < n; i++) r[i] = x[i] - v.x[i]; return r;}
-
+    __host__ __device__
     vec operator * (const vec& v) const
     {vec r; for(int i = 0; i < n; i++) r[i] = x[i] * v.x[i]; return r;}
-
+    __host__ __device__
     vec operator / (const vec& v) const
     {vec r; for(int i = 0; i < n; i++) r[i] = x[i] / v.x[i]; return r;}
-
+    __host__ __device__
     vec operator + (const T& c) const
     {vec r; for(int i = 0; i < n; i++) r[i] = x[i] + c; return r;}
-
+    __host__ __device__
     vec operator - (const T& c) const
     {vec r; for(int i = 0; i < n; i++) r[i] = x[i] - c; return r;}
-
+    __host__ __device__
     vec operator * (const T& c) const
     {vec r; for(int i = 0; i < n; i++) r[i] = x[i] * c; return r;}
-
+    __host__ __device__
     vec operator / (const T& c) const
     {vec r; for(int i = 0; i < n; i++) r[i] = x[i] / c; return r;}
-
+    __host__ __device__
     const T& operator[] (int i) const
     {return x[i];}
-
+    __host__ __device__
     T& operator[] (int i)
     {return x[i];}
 
+    __host__ __device__
     T magnitude_squared() const
     {return dot(*this, *this);}
-
+    __host__ __device__
     T magnitude() const
     {return sqrt(magnitude_squared());}
 
     // Be careful to handle the zero vector gracefully
+        __host__ __device__
     vec normalized() const
     {T mag = magnitude(); if(mag) return *this / mag; vec r; r[0] = 1; return r;};
 };
 
 template <class T, int n>
+__host__ __device__
 vec<T,n> operator * (const T& c, const vec<T,n>& v)
 {return v*c;}
 
 template <class T, int n>
+__host__ __device__
 T dot(const vec<T,n> & u, const vec<T,n> & v)
 {
     T r  =  0;
@@ -125,6 +130,7 @@ T dot(const vec<T,n> & u, const vec<T,n> & v)
 }
 
 template <class T >
+__host__ __device__
 vec<T,3> cross(const vec<T,3> & u, const vec<T,3> & v)
 {
     return vec<T,3> (
@@ -134,6 +140,7 @@ vec<T,3> cross(const vec<T,3> & u, const vec<T,3> & v)
 }
 
 template<class T, int d>
+__host__ __device__
 vec<T,d> componentwise_max(const vec<T,d>& a, const vec<T,d>& b)
 {
     vec<T,d> r;
@@ -142,6 +149,7 @@ vec<T,d> componentwise_max(const vec<T,d>& a, const vec<T,d>& b)
 }
 
 template<class T, int d>
+__host__ __device__
 vec<T,d> componentwise_min(const vec<T,d>& a, const vec<T,d>& b)
 {
     vec<T,d> r;
@@ -150,6 +158,7 @@ vec<T,d> componentwise_min(const vec<T,d>& a, const vec<T,d>& b)
 }
 
 template <class T, int n>
+__host__ __device__
 std::ostream& operator << (std::ostream& out, const vec<T,n> & u)
 {
     out << '(';
@@ -163,6 +172,7 @@ std::ostream& operator << (std::ostream& out, const vec<T,n> & u)
 }
 
 template <class T, int n>
+__host__ __device__
 std::istream& operator >> (std::istream& in, vec<T,n> & u)
 {
     for(int i = 0; i < n; i++)
@@ -175,6 +185,7 @@ std::istream& operator >> (std::istream& in, vec<T,n> & u)
 using std::abs;
 
 template <class T, int n>
+__host__ __device__
 vec<T,n> abs(const vec<T,n> & u)
 {
     vec<T,n> r;

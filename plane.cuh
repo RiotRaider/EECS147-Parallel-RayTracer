@@ -5,28 +5,25 @@
 
 class Parse;
 
-class Plane : public Object, public Managed
+class Plane : public Object
 {
 public:
     vec3 x;
     vec3 normal;
 
     Plane(const Parse* parse,std::istream& in);
-    
-    Plane()
-        :x(0,0,0), normal(0,0,1)
-    {}
+    Plane() :x(0,0,0), normal(0,0,1) {}
 
-    virtual ~Plane() = default;
+    ~Plane();
 
     __host__ __device__
-    virtual Hit Intersection(const Ray& ray, int part) const override;
+    Hit Intersection(const Ray& ray, int part) const;
     
     __host__ __device__
-    virtual vec3 Normal(const Ray& ray, const Hit& hit) const override;
+    vec3 Normal(const Ray& ray, const Hit& hit) const;
     
     __host__ __device__
-    virtual std::pair<Box,bool> Bounding_Box(int part) const override;
+    std::pair<Box,bool> Bounding_Box(int part) const;
 
     static constexpr const char* parse_name = "plane";
 };
