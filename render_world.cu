@@ -170,8 +170,8 @@ void Render_World::Render()
         dim3 grid(ceil(camera->number_pixels[0]/(float)16),ceil(camera->number_pixels[1]/(float)16),1);
         dim3 block(16,16,1);
         
-            //Kernel_Render_Pixel<<<grid,block>>>(this);
-            Kernel_Render_Pixel<<<dim3(1,1,1),dim3(1,1,1)>>>(this);
+            Kernel_Render_Pixel<<<grid,block>>>(this);
+            //Kernel_Render_Pixel<<<dim3(1,1,1),dim3(1,1,1)>>>(this);
             cudaDeviceSynchronize();
             
             
@@ -187,13 +187,13 @@ void Render_World::Render()
         printf("Render image on cpu...\n"); fflush(stdout);
         startTime(&timer);
 
-        // for (int j = 0; j < camera->number_pixels[1]; j++) {
-        //     for (int i = 0; i < camera->number_pixels[0]; i++) {
-        //         Render_Pixel(ivec2(i, j));
-        //     }
-        // }
+        for (int j = 0; j < camera->number_pixels[1]; j++) {
+            for (int i = 0; i < camera->number_pixels[0]; i++) {
+                Render_Pixel(ivec2(i, j));
+            }
+        }
 
-        Render_Pixel(ivec2(320,240));
+        //Render_Pixel(ivec2(320,240));
 
         stopTime(&timer); 
         printf("%f s\n", elapsedTime(timer));

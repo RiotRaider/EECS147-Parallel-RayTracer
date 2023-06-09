@@ -1,4 +1,4 @@
-gpu 0
+gpu 1
 size 640 480
 color amb 0 0 0
 color diff 1 0 1

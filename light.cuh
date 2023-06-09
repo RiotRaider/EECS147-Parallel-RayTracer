@@ -17,6 +17,7 @@ class Light : public Managed
 public:
     std::string name;
     vec3 position;
+    float _pi = pi;
     const Color* color = nullptr; // RGB color components
     double brightness = 0;
 
