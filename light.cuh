@@ -27,5 +27,13 @@ public:
     vec3 Emitted_Light(const vec3& vector_to_light) const;
 
     static constexpr const char* parse_name = "point_light";
+
+private:
+    void _realloc(){
+        if(color != 0){
+            cudaFree((void*)color);
+        }
+        cudaMallocManaged(&color,sizeof(Color));
+    }
 };
 #endif

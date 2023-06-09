@@ -112,8 +112,11 @@ void Kernel_Render_Pixel(Render_World* r){
     // __syncthreads();
     if((threadIdx.x+blockDim.x*blockIdx.x) < r->camera->number_pixels[0] && (threadIdx.y+blockDim.y*blockIdx.y) < r->camera->number_pixels[1])
     {
-        r->Render_Pixel(ivec2((threadIdx.x+blockDim.x*blockIdx.x),(threadIdx.y+blockDim.y*blockIdx.y)));
-        //r->Render_Pixel(ivec2(320,240));
+        //r->Render_Pixel(ivec2((threadIdx.x+blockDim.x*blockIdx.x),(threadIdx.y+blockDim.y*blockIdx.y)));
+        vec3 color= r->lights[0]->color->Get_Color(vec2(0,0));
+        printf("From KernelLight Color:(%f, %f, %f)\n",color[0],color[1],color[2]);
+        r->Render_Pixel(ivec2(320,240));
+        
     }
     __syncthreads();
 }

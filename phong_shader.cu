@@ -19,9 +19,12 @@ Phong_Shader::Phong_Shader(const Parse *parse, std::istream &in)
 Phong_Shader::Phong_Shader(const Phong_Shader& s){
    _realloc();
    specular_power = s.specular_power;
-   color_ambient = s.color_ambient;
-   color_diffuse = s.color_diffuse;
-   color_specular = s.color_specular;
+   memcpy((void*)color_ambient,s.color_ambient,sizeof(Color));
+   memcpy((void*)color_diffuse,s.color_diffuse,sizeof(Color));
+   memcpy((void*)color_specular,s.color_specular,sizeof(Color));
+//    color_ambient = s.color_ambient;
+//    color_diffuse = s.color_diffuse;
+//    color_specular = s.color_specular;
 }
 
 
@@ -41,7 +44,7 @@ vec3 Phong_Shader::
         ambient *= render_world.ambient_color->Get_Color(hit.uv);
     }
 
-    //printf("Ambient: (%f, %f, %f)\n",color[0],color[1],color[2]);
+    printf("Ambient: (%f, %f, %f)\n",color[0],color[1],color[2]);
     color = ambient;
     std::pair<Phong_Shaded_Sphere, Hit> obj; // object along ray from intersection back to light source
     vec3 shadeRay;                     // Shade ray for diffuse calculations.
@@ -74,6 +77,7 @@ vec3 Phong_Shader::
             {
                 intensity = 0;
             }
+            printf("Calculate Diffuse\n");
             diffuse = (render_world.lights[i]->Emitted_Light(shadeRay) * intensity) * color_diffuse->Get_Color(hit.uv);
             reflect = (2 * dot(normal, shadeRay.normalized()) * normal - (shadeRay.normalized()));
             phi = dot(-ray.direction, reflect);
@@ -81,10 +85,12 @@ vec3 Phong_Shader::
             {
                 phi = 0;
             }
+            printf("Calculate Specular\n");
             specular = (render_world.lights[i]->Emitted_Light(shadeRay) * pow(phi, specular_power)) * color_specular->Get_Color(hit.uv);
             lit = false;
-            //printf("diffuse: (%f, %f, %f)\n",diffuse[0],diffuse[1],diffuse[2]);
-            //printf("specular: (%f, %f, %f)\n",specular[0],specular[1],specular[2]);
+            printf("diffuse: (%f, %f, %f)\n",diffuse[0],diffuse[1],diffuse[2]);
+            printf("specular power: %f\n",specular_power);
+            printf("specular: (%f, %f, %f)\n",specular[0],specular[1],specular[2]);
             color += diffuse + specular;
         }
     }
@@ -137,6 +143,7 @@ vec3 Phong_Shader::
             {
                 intensity = 0;
             }
+            
             diffuse = (render_world.lights[i]->Emitted_Light(shadeRay) * intensity) * color_diffuse->Get_Color(hit.uv);
             reflect = (2 * dot(normal, shadeRay.normalized()) * normal - (shadeRay.normalized()));
             phi = dot(-ray.direction, reflect);
@@ -144,6 +151,7 @@ vec3 Phong_Shader::
             {
                 phi = 0;
             }
+            
             specular = (render_world.lights[i]->Emitted_Light(shadeRay) * pow(phi, specular_power)) * color_specular->Get_Color(hit.uv);
             lit = false;
             color += diffuse + specular;
