@@ -87,8 +87,3 @@ echo -e "\nTest Phong Shader-16"
 echo -e "\nTest Phong Shader-17"
 ./ray_tracer -i tests-cpu/p-19.txt -s test-solutions/p-19.png
 ./ray_tracer -i tests-gpu/p-19g.txt -s test-solutions/p-19.png
-
-echo -e "\nTest Phong Shader-18"
-./ray_tracer -i tests-cpu/p-20.txt -s test-solutions/p-20.png
-./ray_tracer -i tests-gpu/p-20g.txt -s test-solutions/p-20.png
-

@@ -6,9 +6,9 @@ color gray .5 .5 .5
 phong_shader red_shader red red white 50
 phong_shader gray_shader gray gray white 50
 plane Pg -1 -1 0 0 1 0
-shaded_object Pg gray_shader
+phong_shaded_plane Pg gray_shader
 plane Pr -1 -1 0 1 0 0
-shaded_object Pr red_shader
+phong_shaded_plane Pr red_shader
 point_light L 0 0 0 white 20
 enable_shadows 1
 recursion_depth_limit 1

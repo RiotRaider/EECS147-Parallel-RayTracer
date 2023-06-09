@@ -158,7 +158,7 @@ void Render_World::Render()
     if (gpu_on) {
         //compute on gpu
         printf("Render image on gpu...\n"); fflush(stdout);
-        printf("Attempt Launch Kernel\n");
+        //printf("Attempt Launch Kernel\n");
         startTime(&timer);
 
         // pls iterate through spheres, planes, shaders, lights, colors, flat_shaded_spheres, phong_shaded_spheres, flat_shaded_planes, phong_shaded_planes
@@ -178,7 +178,7 @@ void Render_World::Render()
         /*================================*/
 
         stopTime(&timer); 
-        printf("Kernel Success\n");
+        //printf("Kernel Success\n");
         printf("\n...%f s\n", elapsedTime(timer));
 
     }
