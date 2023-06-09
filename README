@@ -13,8 +13,8 @@ This compiles:
     nvc++ -std=c++17 -O3 *.cpp *.cu -o ray_tracer -lpng -lcudart -lcuda
 
 To run ray tracer:
-    ./ray_tracer -i tests-flat/00.txt
-
+    ./ray_tracer -i tests-flat/00.txt -s tests-flat/00.png
+    ./ray_tracer -i tests-flat/00g.txt -s tests-flat/00.png
     ./ray_tracer -i tests-phong/08.txt -s tests-phong/08.png 
 
 Debugging:

@@ -1,5 +1,5 @@
-gpu 1
-size 640 480
+gpu 0
+size 3440 1440
 color red 1 0 0
 color green 0 1 0
 color blue .2 .2 .8

@@ -14,7 +14,9 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
 {
     Hit hit;
     vec3 e = ray.endpoint;
+    //printf("Attempt this reference\n");
     vec3 w= (this->center-e);
+    //printf("Succeeded this reference\n");
     double wu=0;
     double t1,t2;
     wu = dot(w,ray.direction);
