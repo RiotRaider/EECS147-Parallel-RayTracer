@@ -181,7 +181,7 @@ void Render_World::Render()
 
         stopTime(&timer); 
         //printf("Kernel Success\n");
-        printf("%f s\n", elapsedTime(timer));
+        printf("%.3f ms\n", elapsedTime(timer) * 1000);
 
     }
     else {
@@ -198,7 +198,7 @@ void Render_World::Render()
         //Render_Pixel(ivec2(320,240));
 
         stopTime(&timer); 
-        printf("%f s\n", elapsedTime(timer));
+        printf("%.3f ms\n", elapsedTime(timer) * 1000);
     }
 }
 

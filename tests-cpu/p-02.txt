@@ -1,5 +1,5 @@
 gpu 0
-size 640 480
+size 3840 2160
 color amb 0 0 0
 color diff 1 .5 .3
 color spec 0 0 0

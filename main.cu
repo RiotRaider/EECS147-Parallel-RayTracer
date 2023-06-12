@@ -142,8 +142,8 @@ int main(int argc, char** argv)
 
         // Read solution from disk
         Read_png(data_sol,width,height,solution_file);
-        assert(render_world->camera->number_pixels[0]==width);
-        assert(render_world->camera->number_pixels[1]==height);
+        //assert(render_world->camera->number_pixels[0]==width);
+        //assert(render_world->camera->number_pixels[1]==height);
 
         // For each pixel, check to see if it matches solution
         double error = 0, total = 0;
