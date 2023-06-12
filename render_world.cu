@@ -18,6 +18,8 @@
 
 extern bool enable_acceleration;
 
+#define BLOCK_SIZE 16
+
 Render_World::~Render_World()
 {
     /*
@@ -157,7 +159,7 @@ void Render_World::Render()
 
     if (gpu_on) {
         //compute on gpu
-        printf("Render image on gpu...\n"); fflush(stdout);
+        printf("Render image on gpu..."); fflush(stdout);
         //printf("Attempt Launch Kernel\n");
         startTime(&timer);
 
@@ -167,8 +169,8 @@ void Render_World::Render()
 
         //launch kernel        
         /*================================*/
-        dim3 grid(ceil(camera->number_pixels[0]/(float)16),ceil(camera->number_pixels[1]/(float)16),1);
-        dim3 block(16,16,1);
+        dim3 grid(ceil(camera->number_pixels[0]/(float)BLOCK_SIZE),ceil(camera->number_pixels[1]/(float)BLOCK_SIZE),1);
+        dim3 block(BLOCK_SIZE,BLOCK_SIZE,1);
         
             Kernel_Render_Pixel<<<grid,block>>>(this);
             //Kernel_Render_Pixel<<<dim3(1,1,1),dim3(1,1,1)>>>(this);
@@ -179,12 +181,12 @@ void Render_World::Render()
 
         stopTime(&timer); 
         //printf("Kernel Success\n");
-        printf("\n...%f s\n", elapsedTime(timer));
+        printf("%f s\n", elapsedTime(timer));
 
     }
     else {
         //compute on cpu
-        printf("Render image on cpu...\n"); fflush(stdout);
+        printf("Render image on cpu..."); fflush(stdout);
         startTime(&timer);
 
         for (int j = 0; j < camera->number_pixels[1]; j++) {

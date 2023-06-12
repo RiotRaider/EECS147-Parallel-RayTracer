@@ -95,6 +95,7 @@ vec3 Phong_Shader::
         }
     }
     return color;
+
 }
 
 /*Shade Surface for Phong Shaded Planes*/
