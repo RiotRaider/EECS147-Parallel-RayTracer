@@ -1,5 +1,5 @@
 gpu 0
-size 3840 2160
+size 1920 1080
 color red 1 0 0
 color green 0 1 0
 color blue .2 .2 .8
