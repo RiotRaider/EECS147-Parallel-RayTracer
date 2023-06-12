@@ -189,16 +189,19 @@ public:
         for(int i = 0; i<num_flat_shaded_spheres; i++){
             flat_shaded_spheres[i] = r.flat_shaded_spheres[i];
         }
+
         for(int i = 0; i<num_phong_shaded_spheres; i++){
             phong_shaded_spheres[i] = r.phong_shaded_spheres[i];
         }
-	 for(int i = 0; i<num_flat_shaded_planes; i++){
+
+	    for(int i = 0; i<num_flat_shaded_planes; i++){
             flat_shaded_planes[i] = r.flat_shaded_planes[i];
         }
-	 for(int i = 0; i<num_phong_shaded_planes; i++){
+
+	    for(int i = 0; i<num_phong_shaded_planes; i++){
             phong_shaded_planes[i] = r.phong_shaded_planes[i];
         }
-
+        
         for(int i = 0; i < num_lights; i++){
             memcpy((void*)lights[i],r.lights[i],sizeof(Light));
         }

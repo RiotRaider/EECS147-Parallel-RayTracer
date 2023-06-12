@@ -110,9 +110,14 @@ void Kernel_Render_Pixel(Render_World* r){
     //   printf("Flat shaded spheres: %d, phong shaded spheres: %d, flat shaded planes: %d, phong shaded planes: %d\nFlat shaders: %d, phong saders: %d", r->num_flat_shaded_spheres, r-> num_phong_shaded_spheres, r->num_flat_shaded_planes, r->num_phong_shaded_planes, r->num_flat_shaders, r->num_phong_shaders); //TODO: finish polymorph//
     // }
     // __syncthreads();
-    if((threadIdx.x+blockDim.x*blockIdx.x) < r->camera->number_pixels[0] && (threadIdx.y+blockDim.y*blockIdx.y) < r->camera->number_pixels[1])
+
+    int col = threadIdx.x+blockDim.x*blockIdx.x; //x
+    int row = threadIdx.y+blockDim.y*blockIdx.y; //y
+
+    //camera_num_pixels[1] = col width, camera_num_pixels[0] = row width
+    if(col < r->camera->number_pixels[0] && row < r->camera->number_pixels[1])
     {
-        r->Render_Pixel(ivec2((threadIdx.x+blockDim.x*blockIdx.x),(threadIdx.y+blockDim.y*blockIdx.y)));
+        r->Render_Pixel(ivec2(col, row));
         // vec3 color= r->lights[0]->color->Get_Color(vec2(0,0));
         // printf("From KernelLight Color:(%f, %f, %f)\n",color[0],color[1],color[2]);
         // r->Render_Pixel(ivec2(320,240));
